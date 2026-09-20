@@ -56,6 +56,7 @@ export function readVideo(file: File): Promise<Attachment> {
 export const STORAGE_KEY = 'luaforge.sessions.v3';
 
 export const SCRIPT_CATEGORIES = [
+  { id: 'fex', name: 'Fex Scripts', icon: '⚡', desc: 'All-in-one mega script' },
   { id: 'esp', name: 'ESP / Visual', icon: '👁️', desc: 'Wallhacks, tracers, chams' },
   { id: 'aimbot', name: 'Aimbot', icon: '🎯', desc: 'Silent aim, lock-on' },
   { id: 'movement', name: 'Movement', icon: '💨', desc: 'Fly, speed, noclip' },
@@ -67,6 +68,12 @@ export const SCRIPT_CATEGORIES = [
 ];
 
 export const QUICK_PROMPTS: Record<string, string[]> = {
+  fex: [
+    'Full Fex script with ESP, Aimbot, Fly, Speed, and Kill Aura',
+    'Complete Fex hub with GUI, Auto Farm, Aimbot, and ESP combined',
+    'Fex mega script: ESP + Aimbot + Movement + Combat + Auto Farm',
+    'All-in-one Fex script with every feature and toggle GUI',
+  ],
   esp: [
     'Player ESP with boxes, names, health bars, and distance',
     'Item ESP that highlights valuable items through walls',
@@ -120,6 +127,793 @@ export const QUICK_PROMPTS: Record<string, string[]> = {
 
 // ============ LOCAL SCRIPT TEMPLATES ============
 export const SCRIPT_TEMPLATES: Record<string, (prompt: string) => { intro: string; code: string; usage: string }> = {
+  fex: (prompt) => ({
+    intro: `Here's the ultimate Fex Script — an all-in-one mega script combining ESP, Aimbot, Movement, Combat, Auto Farm, GUI, and Utility. Everything in one script with a full toggle GUI.`,
+    code: `-- ╔═══════════════════════════════════════════════════════════╗
+-- ║                    FEX SCRIPT v3.0                        ║
+-- ║         All-in-One Executor Mega Script                   ║
+-- ║  ESP + Aimbot + Movement + Combat + AutoFarm + Utility    ║
+-- ╚═══════════════════════════════════════════════════════════╝
+-- Compatible: Synapse X, Script-Ware, KRNL, Fluxus, Hydrogen, Delta
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+local TeleportService = game:GetService("TeleportService")
+local PathfindingService = game:GetService("PathfindingService")
+local VirtualUser = game:GetService("VirtualUser")
+local LocalPlayer = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+local Mouse = LocalPlayer:GetMouse()
+
+-- ═══════════════════════════════════════════════════════════
+--                    MASTER SETTINGS
+-- ═══════════════════════════════════════════════════════════
+local Fex = {
+    -- ESP
+    ESP = { Enabled = false, ShowBoxes = true, ShowNames = true, ShowHealth = true, ShowDistance = true, ShowTracers = false, BoxColor = Color3.fromRGB(168, 85, 247), MaxDistance = 5000, TeamCheck = false },
+    
+    -- Aimbot
+    Aimbot = { Enabled = false, FOV = 200, ShowFOV = true, FOVColor = Color3.fromRGB(168, 85, 247), Smoothness = 0.15, Prediction = true, PredictionAmount = 0.165, TeamCheck = true, WallCheck = true, TargetPart = "Head", AimKey = Enum.UserInputType.MouseButton2 },
+    
+    -- Movement
+    Movement = { FlyEnabled = false, FlySpeed = 50, SpeedEnabled = false, WalkSpeed = 100, NoclipEnabled = false, InfiniteJump = false, DefaultWalkSpeed = 16 },
+    
+    -- Combat
+    Combat = { KillAuraEnabled = false, KillAuraRange = 25, KillAuraSpeed = 0.1, AutoParryEnabled = false, HitboxEnabled = false, HitboxSize = Vector3.new(10, 10, 10), TeamCheck = true },
+    
+    -- Auto Farm
+    AutoFarm = { Enabled = false, FarmRange = 500, CollectDelay = 0.5, UsePathfinding = true, TPInstantly = false, TPSpeed = 5, TargetItem = "Fruit" },
+    
+    -- Utility
+    Utility = { AntiAFK = false, FreecamEnabled = false, FreecamSpeed = 2 },
+    
+    -- GUI
+    GUI = { Enabled = true, ToggleKey = Enum.KeyCode.RightShift },
+}
+
+getgenv().FexScript = Fex
+
+-- ═══════════════════════════════════════════════════════════
+--                    GUI CREATION
+-- ═══════════════════════════════════════════════════════════
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "FexScript_Hub"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.Parent = game:GetService("CoreGui")
+
+local Main = Instance.new("Frame")
+Main.Name = "Main"
+Main.Size = UDim2.new(0, 560, 0, 400)
+Main.Position = UDim2.new(0.5, -280, 0.5, -200)
+Main.BackgroundColor3 = Color3.fromRGB(12, 12, 16)
+Main.BorderSizePixel = 0
+Main.Active = true
+Main.Draggable = true
+Main.Parent = ScreenGui
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 12)
+MainCorner.Parent = Main
+
+local MainStroke = Instance.new("UIStroke")
+MainStroke.Color = Color3.fromRGB(168, 85, 247)
+MainStroke.Thickness = 1.5
+MainStroke.Transparency = 0.4
+MainStroke.Parent = Main
+
+-- Header
+local Header = Instance.new("Frame")
+Header.Size = UDim2.new(1, 0, 0, 45)
+Header.BackgroundColor3 = Color3.fromRGB(18, 18, 24)
+Header.BorderSizePixel = 0
+Header.Parent = Main
+
+local HeaderCorner = Instance.new("UICorner")
+HeaderCorner.CornerRadius = UDim.new(0, 12)
+HeaderCorner.Parent = Header
+
+local HeaderFix = Instance.new("Frame")
+HeaderFix.Size = UDim2.new(1, 0, 0, 15)
+HeaderFix.Position = UDim2.new(0, 0, 1, -15)
+HeaderFix.BackgroundColor3 = Color3.fromRGB(18, 18, 24)
+HeaderFix.BorderSizePixel = 0
+HeaderFix.Parent = Header
+
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(0, 250, 1, 0)
+Title.Position = UDim2.new(0, 15, 0, 0)
+Title.BackgroundTransparency = 1
+Title.Text = "⚡ FEX SCRIPT v3.0"
+Title.TextColor3 = Color3.fromRGB(168, 85, 247)
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 16
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Parent = Header
+
+local CloseBtn = Instance.new("TextButton")
+CloseBtn.Size = UDim2.new(0, 30, 0, 30)
+CloseBtn.Position = UDim2.new(1, -40, 0.5, -15)
+CloseBtn.BackgroundColor3 = Color3.fromRGB(239, 68, 68)
+CloseBtn.Text = "✕"
+CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseBtn.Font = Enum.Font.GothamBold
+CloseBtn.TextSize = 14
+CloseBtn.Parent = Header
+
+local CloseCorner = Instance.new("UICorner")
+CloseCorner.CornerRadius = UDim.new(0, 6)
+CloseCorner.Parent = CloseBtn
+
+-- Sidebar
+local Sidebar = Instance.new("Frame")
+Sidebar.Size = UDim2.new(0, 150, 1, -55)
+Sidebar.Position = UDim2.new(0, 0, 0, 50)
+Sidebar.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+Sidebar.BorderSizePixel = 0
+Sidebar.Parent = Main
+
+local TabLayout = Instance.new("UIListLayout")
+TabLayout.Padding = UDim.new(0, 2)
+TabLayout.SortOrder = Enum.SortOrder.LayoutOrder
+TabLayout.Parent = Sidebar
+
+-- Content
+local Content = Instance.new("Frame")
+Content.Size = UDim2.new(1, -160, 1, -55)
+Content.Position = UDim2.new(0, 155, 0, 50)
+Content.BackgroundTransparency = 1
+Content.Parent = Main
+
+-- Tabs
+local Tabs = {
+    {Name = "ESP", Icon = "👁️", Order = 1},
+    {Name = "Aimbot", Icon = "🎯", Order = 2},
+    {Name = "Movement", Icon = "💨", Order = 3},
+    {Name = "Combat", Icon = "⚔️", Order = 4},
+    {Name = "AutoFarm", Icon = "🤖", Order = 5},
+    {Name = "Utility", Icon = "🔧", Order = 6},
+}
+
+local TabButtons = {}
+local TabPages = {}
+local CurrentTab = nil
+
+for _, tab in pairs(Tabs) do
+    local TabBtn = Instance.new("TextButton")
+    TabBtn.Name = tab.Name .. "Tab"
+    TabBtn.Size = UDim2.new(1, -10, 0, 35)
+    TabBtn.BackgroundColor3 = Color3.fromRGB(22, 22, 28)
+    TabBtn.BorderSizePixel = 0
+    TabBtn.Text = "  " .. tab.Icon .. "  " .. tab.Name
+    TabBtn.TextColor3 = Color3.fromRGB(150, 150, 160)
+    TabBtn.Font = Enum.Font.GothamMedium
+    TabBtn.TextSize = 13
+    TabBtn.TextXAlignment = Enum.TextXAlignment.Left
+    TabBtn.LayoutOrder = tab.Order
+    TabBtn.AutoButtonColor = false
+    TabBtn.Parent = Sidebar
+    
+    local TabCorner = Instance.new("UICorner")
+    TabCorner.CornerRadius = UDim.new(0, 8)
+    TabCorner.Parent = TabBtn
+    
+    local TabPage = Instance.new("ScrollingFrame")
+    TabPage.Name = tab.Name .. "Page"
+    TabPage.Size = UDim2.new(1, 0, 1, 0)
+    TabPage.BackgroundTransparency = 1
+    TabPage.BorderSizePixel = 0
+    TabPage.ScrollBarThickness = 3
+    TabPage.ScrollBarImageColor3 = Color3.fromRGB(168, 85, 247)
+    TabPage.Visible = false
+    TabPage.Parent = Content
+    
+    local PageLayout = Instance.new("UIListLayout")
+    PageLayout.Padding = UDim.new(0, 8)
+    PageLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    PageLayout.Parent = TabPage
+    
+    TabButtons[tab.Name] = TabBtn
+    TabPages[tab.Name] = TabPage
+end
+
+-- Toggle helper
+local function CreateToggle(parent, name, default, order, callback)
+    local Container = Instance.new("Frame")
+    Container.Size = UDim2.new(1, -10, 0, 40)
+    Container.BackgroundColor3 = Color3.fromRGB(20, 20, 26)
+    Container.BorderSizePixel = 0
+    Container.LayoutOrder = order
+    Container.Parent = parent
+    
+    local CCorner = Instance.new("UICorner")
+    CCorner.CornerRadius = UDim.new(0, 8)
+    CCorner.Parent = Container
+    
+    local Label = Instance.new("TextLabel")
+    Label.Size = UDim2.new(1, -60, 1, 0)
+    Label.Position = UDim2.new(0, 12, 0, 0)
+    Label.BackgroundTransparency = 1
+    Label.Text = name
+    Label.TextColor3 = Color3.fromRGB(200, 200, 210)
+    Label.Font = Enum.Font.Gotham
+    Label.TextSize = 13
+    Label.TextXAlignment = Enum.TextXAlignment.Left
+    Label.Parent = Container
+    
+    local Toggle = Instance.new("TextButton")
+    Toggle.Size = UDim2.new(0, 40, 0, 22)
+    Toggle.Position = UDim2.new(1, -50, 0.5, -11)
+    Toggle.BackgroundColor3 = default and Color3.fromRGB(168, 85, 247) or Color3.fromRGB(50, 50, 60)
+    Toggle.Text = ""
+    Toggle.AutoButtonColor = false
+    Toggle.Parent = Container
+    
+    local TCorner = Instance.new("UICorner")
+    TCorner.CornerRadius = UDim.new(1, 0)
+    TCorner.Parent = Toggle
+    
+    local Circle = Instance.new("Frame")
+    Circle.Size = UDim2.new(0, 16, 0, 16)
+    Circle.Position = default and UDim2.new(1, -19, 0.5, -8) or UDim2.new(0, 3, 0.5, -8)
+    Circle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Circle.BorderSizePixel = 0
+    Circle.Parent = Toggle
+    
+    local CircleCorner = Instance.new("UICorner")
+    CircleCorner.CornerRadius = UDim.new(1, 0)
+    CircleCorner.Parent = Circle
+    
+    local enabled = default
+    Toggle.MouseButton1Click:Connect(function()
+        enabled = not enabled
+        TweenService:Create(Toggle, TweenInfo.new(0.2), {BackgroundColor3 = enabled and Color3.fromRGB(168, 85, 247) or Color3.fromRGB(50, 50, 60)}):Play()
+        TweenService:Create(Circle, TweenInfo.new(0.2), {Position = enabled and UDim2.new(1, -19, 0.5, -8) or UDim2.new(0, 3, 0.5, -8)}):Play()
+        if callback then callback(enabled) end
+    end)
+end
+
+-- Populate tabs
+CreateToggle(TabPages["ESP"], "Player ESP", false, 1, function(v) Fex.ESP.Enabled = v end)
+CreateToggle(TabPages["ESP"], "Show Boxes", true, 2, function(v) Fex.ESP.ShowBoxes = v end)
+CreateToggle(TabPages["ESP"], "Show Names", true, 3, function(v) Fex.ESP.ShowNames = v end)
+CreateToggle(TabPages["ESP"], "Show Health", true, 4, function(v) Fex.ESP.ShowHealth = v end)
+CreateToggle(TabPages["ESP"], "Show Distance", true, 5, function(v) Fex.ESP.ShowDistance = v end)
+CreateToggle(TabPages["ESP"], "Team Check", false, 6, function(v) Fex.ESP.TeamCheck = v end)
+
+CreateToggle(TabPages["Aimbot"], "Aimbot", false, 1, function(v) Fex.Aimbot.Enabled = v end)
+CreateToggle(TabPages["Aimbot"], "Show FOV Circle", true, 2, function(v) Fex.Aimbot.ShowFOV = v end)
+CreateToggle(TabPages["Aimbot"], "Prediction", true, 3, function(v) Fex.Aimbot.Prediction = v end)
+CreateToggle(TabPages["Aimbot"], "Team Check", true, 4, function(v) Fex.Aimbot.TeamCheck = v end)
+CreateToggle(TabPages["Aimbot"], "Wall Check", true, 5, function(v) Fex.Aimbot.WallCheck = v end)
+
+CreateToggle(TabPages["Movement"], "Fly (F)", false, 1, function(v) Fex.Movement.FlyEnabled = v end)
+CreateToggle(TabPages["Movement"], "Speed (G)", false, 2, function(v) Fex.Movement.SpeedEnabled = v end)
+CreateToggle(TabPages["Movement"], "Noclip (C)", false, 3, function(v) Fex.Movement.NoclipEnabled = v end)
+CreateToggle(TabPages["Movement"], "Infinite Jump (V)", false, 4, function(v) Fex.Movement.InfiniteJump = v end)
+
+CreateToggle(TabPages["Combat"], "Kill Aura (X)", false, 1, function(v) Fex.Combat.KillAuraEnabled = v end)
+CreateToggle(TabPages["Combat"], "Auto Parry (Z)", false, 2, function(v) Fex.Combat.AutoParryEnabled = v end)
+CreateToggle(TabPages["Combat"], "Hitbox Expander (B)", false, 3, function(v) Fex.Combat.HitboxEnabled = v end)
+CreateToggle(TabPages["Combat"], "Team Check", true, 4, function(v) Fex.Combat.TeamCheck = v end)
+
+CreateToggle(TabPages["AutoFarm"], "Auto Farm (P)", false, 1, function(v) Fex.AutoFarm.Enabled = v end)
+CreateToggle(TabPages["AutoFarm"], "Use Pathfinding", true, 2, function(v) Fex.AutoFarm.UsePathfinding = v end)
+CreateToggle(TabPages["AutoFarm"], "Teleport Mode", false, 3, function(v) Fex.AutoFarm.TPInstantly = v end)
+
+CreateToggle(TabPages["Utility"], "Anti-AFK (F1)", false, 1, function(v) Fex.Utility.AntiAFK = v end)
+CreateToggle(TabPages["Utility"], "Freecam (F2)", false, 2, function(v) Fex.Utility.FreecamEnabled = v end)
+
+-- Tab switching
+local function SelectTab(tabName)
+    if CurrentTab == tabName then return end
+    if CurrentTab and TabButtons[CurrentTab] then
+        TabButtons[CurrentTab].BackgroundColor3 = Color3.fromRGB(22, 22, 28)
+        TabButtons[CurrentTab].TextColor3 = Color3.fromRGB(150, 150, 160)
+    end
+    CurrentTab = tabName
+    TabButtons[tabName].BackgroundColor3 = Color3.fromRGB(168, 85, 247)
+    TabButtons[tabName].TextColor3 = Color3.fromRGB(255, 255, 255)
+    for name, page in pairs(TabPages) do page.Visible = (name == tabName) end
+end
+
+for name, btn in pairs(TabButtons) do
+    btn.MouseButton1Click:Connect(function() SelectTab(name) end)
+end
+
+CloseBtn.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
+SelectTab("ESP")
+
+-- ═══════════════════════════════════════════════════════════
+--                    ESP SYSTEM
+-- ═══════════════════════════════════════════════════════════
+local ESPObjects = {}
+local ESPFolder = Instance.new("Folder")
+ESPFolder.Name = "FexESP"
+ESPFolder.Parent = game:GetService("CoreGui")
+
+local function CreateESP(player)
+    if player == LocalPlayer then return end
+    local folder = Instance.new("Folder")
+    folder.Name = player.Name
+    folder.Parent = ESPFolder
+    
+    local nameTag = Instance.new("BillboardGui")
+    nameTag.Size = UDim2.new(0, 200, 0, 50)
+    nameTag.StudsOffset = Vector3.new(0, 3, 0)
+    nameTag.AlwaysOnTop = true
+    nameTag.Parent = folder
+    
+    local nameLabel = Instance.new("TextLabel")
+    nameLabel.Size = UDim2.new(1, 0, 0.5, 0)
+    nameLabel.BackgroundTransparency = 1
+    nameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    nameLabel.TextStrokeTransparency = 0
+    nameLabel.Font = Enum.Font.GothamBold
+    nameLabel.TextSize = 14
+    nameLabel.Parent = nameTag
+    
+    local healthLabel = Instance.new("TextLabel")
+    healthLabel.Position = UDim2.new(0, 0, 0.5, 0)
+    healthLabel.Size = UDim2.new(1, 0, 0.5, 0)
+    healthLabel.BackgroundTransparency = 1
+    healthLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+    healthLabel.TextStrokeTransparency = 0
+    healthLabel.Font = Enum.Font.Gotham
+    healthLabel.TextSize = 12
+    healthLabel.Parent = nameTag
+    
+    local distLabel = Instance.new("TextLabel")
+    distLabel.Size = UDim2.new(0, 100, 0, 20)
+    distLabel.BackgroundTransparency = 1
+    distLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+    distLabel.TextStrokeTransparency = 0
+    distLabel.Font = Enum.Font.Gotham
+    distLabel.TextSize = 12
+    distLabel.Parent = folder
+    
+    ESPObjects[player] = { Folder = folder, NameTag = nameTag, NameLabel = nameLabel, HealthLabel = healthLabel, DistLabel = distLabel }
+end
+
+local function RemoveESP(player)
+    if ESPObjects[player] then ESPObjects[player].Folder:Destroy() ESPObjects[player] = nil end
+end
+
+-- ═══════════════════════════════════════════════════════════
+--                    AIMBOT SYSTEM
+-- ═══════════════════════════════════════════════════════════
+local FOVCircle = Drawing.new("Circle")
+FOVCircle.Thickness = 1.5
+FOVCircle.NumSides = 64
+FOVCircle.Radius = Fex.Aimbot.FOV
+FOVCircle.Filled = false
+FOVCircle.Color = Fex.Aimbot.FOVColor
+FOVCircle.Visible = false
+FOVCircle.Transparency = 0.8
+
+local CurrentTarget = nil
+local IsAiming = false
+
+local function GetClosestPlayer()
+    local closest, closestDist = nil, Fex.Aimbot.FOV
+    for _, player in pairs(Players:GetPlayers()) do
+        if player == LocalPlayer then continue end
+        if not player.Character then continue end
+        local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+        if not humanoid or humanoid.Health <= 0 then continue end
+        if Fex.Aimbot.TeamCheck and player.Team == LocalPlayer.Team then continue end
+        local targetPart = player.Character:FindFirstChild(Fex.Aimbot.TargetPart)
+        if not targetPart then continue end
+        local screenPos, onScreen = Camera:WorldToViewportPoint(targetPart.Position)
+        if not onScreen then continue end
+        local mousePos = UserInputService:GetMouseLocation()
+        local dist = (Vector2.new(screenPos.X, screenPos.Y) - mousePos).Magnitude
+        if dist < closestDist then closestDist = dist closest = player end
+    end
+    return closest
+end
+
+-- ═══════════════════════════════════════════════════════════
+--                    FLY SYSTEM
+-- ═══════════════════════════════════════════════════════════
+local flyBV, flyBG
+local flying = false
+
+local function StartFly()
+    if flying then return end
+    flying = true
+    local char = LocalPlayer.Character
+    if not char then return end
+    local root = char:FindFirstChild("HumanoidRootPart")
+    local hum = char:FindFirstChildOfClass("Humanoid")
+    if not root or not hum then return end
+    flyBV = Instance.new("BodyVelocity")
+    flyBV.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+    flyBV.Velocity = Vector3.new(0, 0, 0)
+    flyBV.Parent = root
+    flyBG = Instance.new("BodyGyro")
+    flyBG.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+    flyBG.P = 9e4
+    flyBG.Parent = root
+    hum.PlatformStand = true
+end
+
+local function StopFly()
+    if not flying then return end
+    flying = false
+    if flyBV then flyBV:Destroy() end
+    if flyBG then flyBG:Destroy() end
+    local char = LocalPlayer.Character
+    if char then
+        local hum = char:FindFirstChildOfClass("Humanoid")
+        if hum then hum.PlatformStand = false end
+    end
+end
+
+-- ═══════════════════════════════════════════════════════════
+--                    NOCLIP SYSTEM
+-- ═══════════════════════════════════════════════════════════
+local noclipConn
+local function StartNoclip()
+    if noclipConn then return end
+    noclipConn = RunService.Stepped:Connect(function()
+        if not Fex.Movement.NoclipEnabled then return end
+        local char = LocalPlayer.Character
+        if not char then return end
+        for _, part in pairs(char:GetDescendants()) do
+            if part:IsA("BasePart") then part.CanCollide = false end
+        end
+    end)
+end
+
+-- ═══════════════════════════════════════════════════════════
+--                    KILL AURA SYSTEM
+-- ═══════════════════════════════════════════════════════════
+local lastKillAura = 0
+local function KillAura()
+    if not Fex.Combat.KillAuraEnabled then return end
+    local now = tick()
+    if now - lastKillAura < Fex.Combat.KillAuraSpeed then return end
+    lastKillAura = now
+    local char = LocalPlayer.Character
+    if not char then return end
+    local myRoot = char:FindFirstChild("HumanoidRootPart")
+    if not myRoot then return end
+    for _, player in pairs(Players:GetPlayers()) do
+        if player == LocalPlayer then continue end
+        if Fex.Combat.TeamCheck and player.Team == LocalPlayer.Team then continue end
+        if not player.Character then continue end
+        local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+        local targetPart = player.Character:FindFirstChild("HumanoidRootPart")
+        if not humanoid or not targetPart then continue end
+        if humanoid.Health <= 0 then continue end
+        local dist = (targetPart.Position - myRoot.Position).Magnitude
+        if dist > Fex.Combat.KillAuraRange then continue end
+        pcall(function()
+            for _, remote in pairs(game:GetDescendants()) do
+                if remote:IsA("RemoteEvent") and string.find(string.lower(remote.Name), "hit") then
+                    remote:FireServer(targetPart, targetPart.Position, player)
+                    break
+                end
+            end
+        end)
+    end
+end
+
+-- ═══════════════════════════════════════════════════════════
+--                    HITBOX EXPANDER
+-- ═══════════════════════════════════════════════════════════
+local expandedParts = {}
+local function ExpandHitbox()
+    if not Fex.Combat.HitboxEnabled then
+        for part, original in pairs(expandedParts) do
+            if part and part.Parent then part.Size = original.Size part.Transparency = original.Transparency end
+        end
+        expandedParts = {}
+        return
+    end
+    for _, player in pairs(Players:GetPlayers()) do
+        if player == LocalPlayer then continue end
+        if Fex.Combat.TeamCheck and player.Team == LocalPlayer.Team then continue end
+        if not player.Character then continue end
+        for _, part in pairs(player.Character:GetChildren()) do
+            if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
+                if not expandedParts[part] then expandedParts[part] = {Size = part.Size, Transparency = part.Transparency} end
+                part.Size = Fex.Combat.HitboxSize
+                part.Transparency = 0.7
+            end
+        end
+    end
+end
+
+-- ═══════════════════════════════════════════════════════════
+--                    AUTO FARM SYSTEM
+-- ═══════════════════════════════════════════════════════════
+local farming = false
+local function FindNearestItem()
+    local char = LocalPlayer.Character
+    if not char then return nil end
+    local myRoot = char:FindFirstChild("HumanoidRootPart")
+    if not myRoot then return nil end
+    local nearest, nearestDist = nil, Fex.AutoFarm.FarmRange
+    local searchNames = {"Orb", "Coin", "Gem", "Item", "Drop", "Collect", "Fruit", "Chest"}
+    for _, obj in pairs(workspace:GetDescendants()) do
+        if obj:IsA("BasePart") or obj:IsA("Model") then
+            for _, name in pairs(searchNames) do
+                if string.find(obj.Name, name) then
+                    local pos = obj:IsA("Model") and obj:GetPivot().Position or obj.Position
+                    local dist = (pos - myRoot.Position).Magnitude
+                    if dist < nearestDist then nearestDist = dist nearest = obj end
+                end
+            end
+        end
+    end
+    return nearest
+end
+
+local function AutoFarmLoop()
+    while farming and Fex.AutoFarm.Enabled do
+        local item = FindNearestItem()
+        if item then
+            local pos = item:IsA("Model") and item:GetPivot().Position or item.Position
+            local char = LocalPlayer.Character
+            local myRoot = char and char:FindFirstChild("HumanoidRootPart")
+            if myRoot then
+                if Fex.AutoFarm.TPInstantly then
+                    myRoot.CFrame = CFrame.new(pos)
+                else
+                    local hum = char:FindFirstChildOfClass("Humanoid")
+                    if hum then hum:MoveTo(pos) end
+                end
+                task.wait(Fex.AutoFarm.CollectDelay)
+                pcall(function()
+                    for _, remote in pairs(game:GetDescendants()) do
+                        if remote:IsA("RemoteEvent") then
+                            local n = string.lower(remote.Name)
+                            if string.find(n, "collect") or string.find(n, "pickup") then remote:FireServer(item) end
+                        end
+                    end
+                end)
+                task.wait(0.2)
+            end
+        else
+            task.wait(0.5)
+        end
+    end
+end
+
+-- ═══════════════════════════════════════════════════════════
+--                    ANTI-AFK SYSTEM
+-- ═══════════════════════════════════════════════════════════
+local function StartAntiAFK()
+    LocalPlayer.Idled:Connect(function()
+        VirtualUser:CaptureController()
+        VirtualUser:ClickButton2(Vector2.new())
+    end)
+end
+
+-- ═══════════════════════════════════════════════════════════
+--                    FREECAM SYSTEM
+-- ═══════════════════════════════════════════════════════════
+local freecamCF = CFrame.new()
+local freecamConn
+local freecamActive = false
+
+local function StartFreecam()
+    if freecamActive then return end
+    freecamActive = true
+    freecamCF = Camera.CFrame
+    freecamConn = RunService.RenderStepped:Connect(function()
+        if not freecamActive then return end
+        local speed = Fex.Utility.FreecamSpeed
+        if UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) then speed = speed * 3 end
+        local moveDir = Vector3.new(0, 0, 0)
+        if UserInputService:IsKeyDown(Enum.KeyCode.W) then moveDir = moveDir + Camera.CFrame.LookVector end
+        if UserInputService:IsKeyDown(Enum.KeyCode.S) then moveDir = moveDir - Camera.CFrame.LookVector end
+        if UserInputService:IsKeyDown(Enum.KeyCode.A) then moveDir = moveDir - Camera.CFrame.RightVector end
+        if UserInputService:IsKeyDown(Enum.KeyCode.D) then moveDir = moveDir + Camera.CFrame.RightVector end
+        if UserInputService:IsKeyDown(Enum.KeyCode.Space) then moveDir = moveDir + Vector3.new(0, 1, 0) end
+        if UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then moveDir = moveDir - Vector3.new(0, 1, 0) end
+        freecamCF = freecamCF + (moveDir * speed)
+        Camera.CFrame = freecamCF
+    end)
+end
+
+local function StopFreecam()
+    if not freecamActive then return end
+    freecamActive = false
+    if freecamConn then freecamConn:Disconnect() freecamConn = nil end
+end
+
+-- ═══════════════════════════════════════════════════════════
+--                    INPUT HANDLER
+-- ═══════════════════════════════════════════════════════════
+UserInputService.InputBegan:Connect(function(input, gp)
+    if gp then return end
+    
+    -- GUI Toggle
+    if input.KeyCode == Fex.GUI.ToggleKey then ScreenGui.Enabled = not ScreenGui.Enabled end
+    
+    -- Movement
+    if input.KeyCode == Enum.KeyCode.F then
+        Fex.Movement.FlyEnabled = not Fex.Movement.FlyEnabled
+        if Fex.Movement.FlyEnabled then StartFly() else StopFly() end
+    end
+    if input.KeyCode == Enum.KeyCode.G then
+        Fex.Movement.SpeedEnabled = not Fex.Movement.SpeedEnabled
+        local char = LocalPlayer.Character
+        local hum = char and char:FindFirstChildOfClass("Humanoid")
+        if hum then hum.WalkSpeed = Fex.Movement.SpeedEnabled and Fex.Movement.WalkSpeed or Fex.Movement.DefaultWalkSpeed end
+    end
+    if input.KeyCode == Enum.KeyCode.C then
+        Fex.Movement.NoclipEnabled = not Fex.Movement.NoclipEnabled
+        if Fex.Movement.NoclipEnabled then StartNoclip() end
+    end
+    if input.KeyCode == Enum.KeyCode.V then Fex.Movement.InfiniteJump = not Fex.Movement.InfiniteJump end
+    
+    -- Combat
+    if input.KeyCode == Enum.KeyCode.X then Fex.Combat.KillAuraEnabled = not Fex.Combat.KillAuraEnabled end
+    if input.KeyCode == Enum.KeyCode.Z then Fex.Combat.AutoParryEnabled = not Fex.Combat.AutoParryEnabled end
+    if input.KeyCode == Enum.KeyCode.B then Fex.Combat.HitboxEnabled = not Fex.Combat.HitboxEnabled end
+    
+    -- Auto Farm
+    if input.KeyCode == Enum.KeyCode.P then
+        Fex.AutoFarm.Enabled = not Fex.AutoFarm.Enabled
+        farming = Fex.AutoFarm.Enabled
+        if farming then task.spawn(AutoFarmLoop) end
+    end
+    
+    -- Utility
+    if input.KeyCode == Enum.KeyCode.F1 then Fex.Utility.AntiAFK = not Fex.Utility.AntiAFK if Fex.Utility.AntiAFK then StartAntiAFK() end end
+    if input.KeyCode == Enum.KeyCode.F2 then
+        Fex.Utility.FreecamEnabled = not Fex.Utility.FreecamEnabled
+        if Fex.Utility.FreecamEnabled then StartFreecam() else StopFreecam() end
+    end
+    
+    -- Aimbot aim key
+    if input.UserInputType == Fex.Aimbot.AimKey then IsAiming = true end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Fex.Aimbot.AimKey then IsAiming = false end
+end)
+
+UserInputService.JumpRequest:Connect(function()
+    if Fex.Movement.InfiniteJump then
+        local char = LocalPlayer.Character
+        local hum = char and char:FindFirstChildOfClass("Humanoid")
+        if hum then hum:ChangeState(Enum.HumanoidStateType.Jumping) end
+    end
+end)
+
+-- ═══════════════════════════════════════════════════════════
+--                    MAIN RENDER LOOP
+-- ═══════════════════════════════════════════════════════════
+RunService.RenderStepped:Connect(function()
+    -- ESP Update
+    for player, objects in pairs(ESPObjects) do
+        local char = player.Character
+        if not char or not Fex.ESP.Enabled then objects.Folder.Enabled = false continue end
+        local head = char:FindFirstChild("Head")
+        local hum = char:FindFirstChildOfClass("Humanoid")
+        local root = char:FindFirstChild("HumanoidRootPart")
+        if not head or not hum or not root or hum.Health <= 0 then objects.Folder.Enabled = false continue end
+        if Fex.ESP.TeamCheck and player.Team == LocalPlayer.Team then objects.Folder.Enabled = false continue end
+        local dist = (root.Position - Camera.CFrame.Position).Magnitude
+        if dist > Fex.ESP.MaxDistance then objects.Folder.Enabled = false continue end
+        objects.Folder.Enabled = true
+        local _, onScreen = Camera:WorldToViewportPoint(head.Position)
+        if onScreen then
+            objects.NameTag.Adornee = head
+            objects.NameTag.Enabled = true
+            if Fex.ESP.ShowNames then objects.NameLabel.Text = player.Name objects.NameLabel.Visible = true else objects.NameLabel.Visible = false end
+            if Fex.ESP.ShowHealth then objects.HealthLabel.Text = math.floor(hum.Health) .. " HP" objects.HealthLabel.Visible = true else objects.HealthLabel.Visible = false end
+            if Fex.ESP.ShowDistance then objects.DistLabel.Text = "[" .. math.floor(dist) .. "m]" objects.DistLabel.Visible = true else objects.DistLabel.Visible = false end
+        else
+            objects.NameTag.Enabled = false
+            objects.DistLabel.Visible = false
+        end
+    end
+    
+    -- Aimbot
+    FOVCircle.Position = UserInputService:GetMouseLocation()
+    FOVCircle.Radius = Fex.Aimbot.FOV
+    FOVCircle.Visible = Fex.Aimbot.ShowFOV and Fex.Aimbot.Enabled
+    if Fex.Aimbot.Enabled then
+        if not CurrentTarget or not CurrentTarget.Character then CurrentTarget = GetClosestPlayer() end
+        if IsAiming and CurrentTarget and CurrentTarget.Character then
+            local targetPart = CurrentTarget.Character:FindFirstChild(Fex.Aimbot.TargetPart)
+            if targetPart then
+                local targetPos = targetPart.Position
+                if Fex.Aimbot.Prediction then
+                    local root = CurrentTarget.Character:FindFirstChild("HumanoidRootPart")
+                    if root then targetPos = targetPos + (root.Velocity * Fex.Aimbot.PredictionAmount) end
+                end
+                local currentCF = Camera.CFrame
+                local targetCF = CFrame.new(currentCF.Position, targetPos)
+                if Fex.Aimbot.Smoothness > 0 then
+                    Camera.CFrame = currentCF:Lerp(targetCF, Fex.Aimbot.Smoothness)
+                else
+                    Camera.CFrame = targetCF
+                end
+            end
+        end
+    end
+    
+    -- Fly movement
+    if flying and flyBV and flyBG then
+        local moveDir = Vector3.new(0, 0, 0)
+        if UserInputService:IsKeyDown(Enum.KeyCode.W) then moveDir = moveDir + Camera.CFrame.LookVector end
+        if UserInputService:IsKeyDown(Enum.KeyCode.S) then moveDir = moveDir - Camera.CFrame.LookVector end
+        if UserInputService:IsKeyDown(Enum.KeyCode.A) then moveDir = moveDir - Camera.CFrame.RightVector end
+        if UserInputService:IsKeyDown(Enum.KeyCode.D) then moveDir = moveDir + Camera.CFrame.RightVector end
+        if UserInputService:IsKeyDown(Enum.KeyCode.Space) then moveDir = moveDir + Vector3.new(0, 1, 0) end
+        if UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) then moveDir = moveDir - Vector3.new(0, 1, 0) end
+        flyBV.Velocity = moveDir * Fex.Movement.FlySpeed
+        flyBG.CFrame = Camera.CFrame
+    end
+end)
+
+RunService.Heartbeat:Connect(function()
+    KillAura()
+    if Fex.Combat.HitboxEnabled then ExpandHitbox() end
+end)
+
+-- ═══════════════════════════════════════════════════════════
+--                    INITIALIZATION
+-- ═══════════════════════════════════════════════════════════
+for _, player in pairs(Players:GetPlayers()) do pcall(CreateESP, player) end
+Players.PlayerAdded:Connect(function(player)
+    pcall(CreateESP, player)
+    player.CharacterAdded:Connect(function() task.wait(1) pcall(CreateESP, player) end)
+end)
+Players.PlayerRemoving:Connect(RemoveESP)
+
+LocalPlayer.CharacterAdded:Connect(function(char)
+    task.wait(1)
+    if Fex.Movement.SpeedEnabled then
+        local hum = char:FindFirstChildOfClass("Humanoid")
+        if hum then hum.WalkSpeed = Fex.Movement.WalkSpeed end
+    end
+    if Fex.Movement.NoclipEnabled then StartNoclip() end
+end)
+
+print("╔═══════════════════════════════════════════════╗")
+print("║         ⚡ FEX SCRIPT v3.0 LOADED ⚡          ║")
+print("╠═══════════════════════════════════════════════╣")
+print("║  GUI: RightShift  |  ESP: via GUI            ║")
+print("║  Aimbot: via GUI  |  Fly: F  | Speed: G      ║")
+print("║  Noclip: C  |  InfJump: V  |  Aura: X       ║")
+print("║  Parry: Z  |  Hitbox: B  |  Farm: P         ║")
+print("║  AntiAFK: F1  |  Freecam: F2                ║")
+print("╚═══════════════════════════════════════════════╝")`,
+    usage: `**⚡ FEX SCRIPT — All-in-One Controls:**
+
+**GUI:**
+- **RightShift** — Toggle GUI
+- Use tabs to switch between ESP, Aimbot, Movement, Combat, AutoFarm, Utility
+
+**Movement:**
+- **F** — Fly (WASD + Space/Shift)
+- **G** — Speed boost
+- **C** — Noclip
+- **V** — Infinite jump
+
+**Combat:**
+- **X** — Kill aura
+- **Z** — Auto parry
+- **B** — Hitbox expander
+
+**Other:**
+- **P** — Auto farm
+- **F1** — Anti-AFK
+- **F2** — Freecam (WASD + Space/Ctrl)
+
+**ESP & Aimbot:** Toggle via GUI tabs`,
+  }),
+
   esp: (prompt) => ({
     intro: `Here's a complete Player ESP script with boxes, names, health bars, and distance. Paste into your executor and run.`,
     code: `-- LuaForge ESP Script

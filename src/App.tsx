@@ -331,7 +331,7 @@ export default function App() {
     }
   });
   const [activeId, setActiveId] = useState<string>('');
-  const [activeCategory, setActiveCategory] = useState('esp');
+  const [activeCategory, setActiveCategory] = useState('fex');
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState('');
