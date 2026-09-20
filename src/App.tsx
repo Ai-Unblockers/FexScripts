@@ -33,13 +33,13 @@ function Sidebar({
           <div className="w-9 h-9 rounded-xl overflow-hidden shadow-lg shadow-purple-500/20 pulse-glow">
             <img 
               src="https://cdn.discordapp.com/icons/1541928149174984784/fa29c0d41945a2ad221ca0cf0c0b7409.png?size=128" 
-              alt="LuaForge Logo" 
+              alt="Fex Scripts Logo" 
               className="w-full h-full object-cover"
             />
           </div>
           <div>
-            <div className="text-[15px] font-bold gradient-text">LuaForge</div>
-            <div className="text-[10px] text-[#52525b] tracking-wider font-medium">EXECUTOR SCRIPTS</div>
+            <div className="text-[15px] font-bold gradient-text">Fex Scripts</div>
+            <div className="text-[10px] text-[#52525b] tracking-wider font-medium">ALL-IN-ONE HUB</div>
           </div>
         </div>
         <button
@@ -107,8 +107,8 @@ function Sidebar({
       <div className="border-t border-[rgba(255,255,255,0.06)] px-4 py-3">
         <div className="flex items-center gap-2 text-[11px] text-[#52525b]">
           <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
-          <span>Ready to generate</span>
-          <span className="ml-auto text-[10px]">v2.0</span>
+          <span>Fex Scripts</span>
+          <span className="ml-auto text-[10px]">v3.0</span>
         </div>
       </div>
     </aside>
@@ -225,7 +225,7 @@ function MessageBubble({ message, isGenerating }: { message: Message; isGenerati
       <div className="w-8 h-8 flex-shrink-0 rounded-xl overflow-hidden border border-purple-500/20">
         <img 
           src="https://cdn.discordapp.com/icons/1541928149174984784/fa29c0d41945a2ad221ca0cf0c0b7409.png?size=128" 
-          alt="LuaForge" 
+          alt="Fex Scripts" 
           className="w-full h-full object-cover"
         />
       </div>
@@ -262,7 +262,7 @@ function EmptyState({
         <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-2xl shadow-purple-500/20 pulse-glow">
           <img 
             src="https://cdn.discordapp.com/icons/1541928149174984784/fa29c0d41945a2ad221ca0cf0c0b7409.png?size=128" 
-            alt="LuaForge Logo" 
+            alt="Fex Scripts Logo" 
             className="w-full h-full object-cover"
           />
         </div>
@@ -272,10 +272,10 @@ function EmptyState({
       </div>
 
       <h1 className="text-[26px] font-bold text-white mb-2">
-        Generate <span className="gradient-text">Executor Scripts</span>
+        <span className="gradient-text">Fex Scripts</span> Hub
       </h1>
       <p className="text-[#a1a1aa] text-[15px] max-w-[460px] leading-relaxed mb-2">
-        Complete, working Lua scripts for Synapse X, Script-Ware, KRNL, Fluxus & more.
+        All-in-one executor scripts for Synapse X, Script-Ware, KRNL, Fluxus & more.
       </p>
       <div className="flex items-center gap-2 mb-8">
         <span className="text-[11px] text-[#52525b] bg-[rgba(255,255,255,0.03)] px-2.5 py-1 rounded-full border border-[rgba(255,255,255,0.06)]">
@@ -551,13 +551,13 @@ export default function App() {
             <div className="w-7 h-7 rounded-lg overflow-hidden shadow-md shadow-purple-500/15">
               <img 
                 src="https://cdn.discordapp.com/icons/1541928149174984784/fa29c0d41945a2ad221ca0cf0c0b7409.png?size=128" 
-                alt="LuaForge Logo" 
+                alt="Fex Scripts Logo" 
                 className="w-full h-full object-cover"
               />
             </div>
             <div className="flex items-baseline gap-2">
-              <span className="font-bold text-[15px] gradient-text">LuaForge</span>
-              <span className="text-[10px] text-[#52525b] font-medium hidden sm:inline tracking-wider">EXECUTOR SCRIPTS</span>
+              <span className="font-bold text-[15px] gradient-text">Fex Scripts</span>
+              <span className="text-[10px] text-[#52525b] font-medium hidden sm:inline tracking-wider">ALL-IN-ONE HUB</span>
             </div>
           </div>
 
@@ -676,7 +676,7 @@ export default function App() {
                 value={inputValue}
                 onChange={handleInput}
                 onKeyDown={handleKeyDown}
-                placeholder={`Describe the ${currentCategory?.name?.toLowerCase() || 'script'} you want...`}
+                placeholder={`Describe what you want in your Fex Script...`}
                 rows={1}
                 className="w-full bg-transparent border-0 outline-none resize-none px-4 pt-3.5 pb-2 text-[14px] text-white placeholder-[#52525b] min-h-[48px]"
               />
@@ -712,7 +712,7 @@ export default function App() {
               </div>
             </div>
             <p className="text-center text-[10px] text-[#3f3f46] mt-3">
-              Scripts generated for educational purposes. Use responsibly.
+              Fex Scripts — All-in-one executor hub. Use responsibly.
             </p>
           </form>
         </div>

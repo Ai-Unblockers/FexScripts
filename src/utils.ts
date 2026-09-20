@@ -916,7 +916,7 @@ print("╚═══════════════════════�
 
   esp: (prompt) => ({
     intro: `Here's a complete Player ESP script with boxes, names, health bars, and distance. Paste into your executor and run.`,
-    code: `-- LuaForge ESP Script
+    code: `-- Fex Scripts ESP
 -- Category: ESP / Visual
 -- Compatible: Synapse X, Script-Ware, KRNL, Fluxus, Hydrogen
 
@@ -943,13 +943,13 @@ local Settings = {
     TeamCheck = false,
 }
 
-getgenv().LuaForgeESP = Settings
+getgenv().FexESP = Settings
 
 -- Storage
 local ESPObjects = {}
 local CoreGui = game:GetService("CoreGui")
 local ESPFolder = Instance.new("Folder")
-ESPFolder.Name = "LuaForge_ESP"
+ESPFolder.Name = "Fex_ESP"
 ESPFolder.Parent = CoreGui
 
 -- Helper functions
@@ -1151,7 +1151,7 @@ Players.PlayerRemoving:Connect(RemoveESP)
 -- Render loop
 RunService.RenderStepped:Connect(UpdateESP)
 
-print("[LuaForge] ESP loaded! Press F1 to toggle.")`,
+print("[Fex] ESP loaded! Press F1 to toggle.")`,
     usage: `**Controls:**
 - **F1** — Toggle ESP on/off
 - Works through walls at any distance (up to 5000 studs)
@@ -1160,7 +1160,7 @@ print("[LuaForge] ESP loaded! Press F1 to toggle.")`,
 
   movement: (prompt) => ({
     intro: `Here's a complete movement script with fly, speed, noclip, and infinite jump. Toggle keys included.`,
-    code: `-- LuaForge Movement Script
+    code: `-- Fex Scripts Movement
 -- Category: Movement
 -- Compatible: Synapse X, Script-Ware, KRNL, Fluxus, Hydrogen
 
@@ -1193,7 +1193,7 @@ local Settings = {
     DefaultJumpPower = 50,
 }
 
-getgenv().LuaForgeMovement = Settings
+getgenv().FexMovement = Settings
 
 -- ============ FLY SCRIPT ============
 local flyBodyVelocity, flyBodyGyro
@@ -1337,7 +1337,7 @@ LocalPlayer.CharacterAdded:Connect(function(char)
     end
 end)
 
-print("[LuaForge] Movement script loaded!")
+print("[Fex] Movement script loaded!")
 print("F = Fly | G = Speed | C = Noclip | V = Infinite Jump")`,
     usage: `**Controls:**
 - **F** — Toggle fly (WASD + Space/Shift to move)
@@ -1349,7 +1349,7 @@ print("F = Fly | G = Speed | C = Noclip | V = Infinite Jump")`,
 
   aimbot: (prompt) => ({
     intro: `Here's a complete aimbot script with FOV circle, prediction, team check, and smooth aiming.`,
-    code: `-- LuaForge Aimbot Script
+    code: `-- Fex Scripts Aimbot
 -- Category: Aimbot
 -- Compatible: Synapse X, Script-Ware, KRNL, Fluxus, Hydrogen
 
@@ -1378,7 +1378,7 @@ local Settings = {
     MaxDistance = 1000,
 }
 
-getgenv().LuaForgeAimbot = Settings
+getgenv().FexAimbot = Settings
 
 -- FOV Circle
 local FOVCircle = Drawing.new("Circle")
@@ -1520,7 +1520,7 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
-print("[LuaForge] Aimbot loaded! Press Q to toggle, hold right-click to aim.")`,
+print("[Fex] Aimbot loaded! Press Q to toggle, hold right-click to aim.")`,
     usage: `**Controls:**
 - **Q** — Toggle aimbot on/off
 - **Right Click (hold)** — Aim at closest target
@@ -1535,7 +1535,7 @@ print("[LuaForge] Aimbot loaded! Press Q to toggle, hold right-click to aim.")`,
 
   combat: (prompt) => ({
     intro: `Here's a complete combat script with kill aura, auto parry, and hitbox expander.`,
-    code: `-- LuaForge Combat Script
+    code: `-- Fex Scripts Combat
 -- Category: Combat
 -- Compatible: Synapse X, Script-Ware, KRNL, Fluxus, Hydrogen
 
@@ -1569,7 +1569,7 @@ local Settings = {
     MaxDistance = 100,
 }
 
-getgenv().LuaForgeCombat = Settings
+getgenv().FexCombat = Settings
 
 local lastKillAura = 0
 local expandedParts = {}
@@ -1731,7 +1731,7 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
-print("[LuaForge] Combat script loaded!")
+print("[Fex] Combat script loaded!")
 print("X = Kill Aura | Z = Auto Parry | B = Hitbox Expander")`,
     usage: `**Controls:**
 - **X** — Toggle kill aura (auto-hits nearby enemies)
@@ -1747,7 +1747,7 @@ print("X = Kill Aura | Z = Auto Parry | B = Hitbox Expander")`,
 
   autofarm: (prompt) => ({
     intro: `Here's a complete auto farm script with GUI toggle and pathfinding.`,
-    code: `-- LuaForge Auto Farm Script
+    code: `-- Fex Scripts Auto Farm
 -- Category: Auto Farm
 -- Compatible: Synapse X, Script-Ware, KRNL, Fluxus, Hydrogen
 
@@ -1772,7 +1772,7 @@ local Settings = {
     KillRange = 30,
 }
 
-getgenv().LuaForgeAutoFarm = Settings
+getgenv().FexAutoFarm = Settings
 
 -- State
 local farming = false
@@ -1780,7 +1780,7 @@ local currentTarget = nil
 
 -- ============ GUI ============
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "LuaForge_AutoFarm"
+ScreenGui.Name = "Fex_AutoFarm"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
@@ -1808,7 +1808,7 @@ local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1, 0, 0, 35)
 Title.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
 Title.BorderSizePixel = 0
-Title.Text = "LuaForge Auto Farm"
+Title.Text = "Fex Auto Farm"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 14
@@ -2029,7 +2029,7 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
     end
 end)
 
-print("[LuaForge] Auto Farm loaded! Press P or click GUI to toggle.")`,
+print("[Fex] Auto Farm loaded! Press P or click GUI to toggle.")`,
     usage: `**Controls:**
 - **P** — Toggle auto farm on/off
 - GUI button also toggles
@@ -2045,7 +2045,7 @@ print("[LuaForge] Auto Farm loaded! Press P or click GUI to toggle.")`,
 
   gui: (prompt) => ({
     intro: `Here's a modern script hub GUI with tabs, settings, and a clean design.`,
-    code: `-- LuaForge Script Hub GUI
+    code: `-- Fex Scripts Hub GUI
 -- Category: GUI Scripts
 -- Compatible: Synapse X, Script-Ware, KRNL, Fluxus, Hydrogen
 
@@ -2056,7 +2056,7 @@ local LocalPlayer = Players.LocalPlayer
 
 -- ============ GUI CREATION ============
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "LuaForge_Hub"
+ScreenGui.Name = "Fex_Hub"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 ScreenGui.Parent = game:GetService("CoreGui")
@@ -2105,7 +2105,7 @@ local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(0, 200, 1, 0)
 Title.Position = UDim2.new(0, 15, 0, 0)
 Title.BackgroundTransparency = 1
-Title.Text = "◧ LuaForge Hub"
+Title.Text = "⚡ Fex Hub"
 Title.TextColor3 = Color3.fromRGB(168, 85, 247)
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 16
@@ -2361,7 +2361,7 @@ end)
 -- Select first tab
 SelectTab("ESP")
 
-print("[LuaForge] Script Hub loaded! RightShift to toggle GUI.")`,
+print("[Fex] Script Hub loaded! RightShift to toggle GUI.")`,
     usage: `**Controls:**
 - **RightShift** — Toggle GUI visibility
 - Click tabs to switch sections
@@ -2372,7 +2372,7 @@ print("[LuaForge] Script Hub loaded! RightShift to toggle GUI.")`,
 
   utility: (prompt) => ({
     intro: `Here's a utility script with anti-AFK, server hop, and freecam.`,
-    code: `-- LuaForge Utility Script
+    code: `-- Fex Scripts Utility
 -- Category: Utility
 -- Compatible: Synapse X, Script-Ware, KRNL, Fluxus, Hydrogen
 
@@ -2401,7 +2401,7 @@ local Settings = {
     RejoinKey = Enum.KeyCode.F4,
 }
 
-getgenv().LuaForgeUtility = Settings
+getgenv().FexUtility = Settings
 
 -- ============ ANTI-AFK ============
 local antiAFKConnection
@@ -2528,10 +2528,10 @@ local function ServerHop()
         if #servers > 0 then
             TeleportService:TeleportToPlaceInstance(placeId, servers[1].id, LocalPlayer)
         else
-            warn("[LuaForge] No available servers found")
+            warn("[Fex] No available servers found")
         end
     else
-        warn("[LuaForge] Failed to fetch server list")
+        warn("[Fex] Failed to fetch server list")
     end
 end
 
@@ -2548,10 +2548,10 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
         Settings.AntiAFK = not Settings.AntiAFK
         if Settings.AntiAFK then
             StartAntiAFK()
-            print("[LuaForge] Anti-AFK enabled")
+            print("[Fex] Anti-AFK enabled")
         else
             StopAntiAFK()
-            print("[LuaForge] Anti-AFK disabled")
+            print("[Fex] Anti-AFK disabled")
         end
     end
     
@@ -2559,10 +2559,10 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
         Settings.Freecam = not Settings.Freecam
         if Settings.Freecam then
             StartFreecam()
-            print("[LuaForge] Freecam enabled (WASD + Space/Ctrl)")
+            print("[Fex] Freecam enabled (WASD + Space/Ctrl)")
         else
             StopFreecam()
-            print("[LuaForge] Freecam disabled")
+            print("[Fex] Freecam disabled")
         end
     end
     
@@ -2575,7 +2575,7 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
     end
 end)
 
-print("[LuaForge] Utility script loaded!")
+print("[Fex] Utility script loaded!")
 print("F1 = Anti-AFK | F2 = Freecam | F3 = Server Hop | F4 = Rejoin")`,
     usage: `**Controls:**
 - **F1** — Toggle anti-AFK (prevents idle kicks)
@@ -2586,7 +2586,7 @@ print("F1 = Anti-AFK | F2 = Freecam | F3 = Server Hop | F4 = Rejoin")`,
 
   game: (prompt) => ({
     intro: `Here's a game-specific script. Adapt the remote names to match your target game.`,
-    code: `-- LuaForge Game Script
+    code: `-- Fex Scripts Game
 -- Category: Game Specific
 -- Compatible: Synapse X, Script-Ware, KRNL, Fluxus, Hydrogen
 -- NOTE: Adapt remote names to your target game
@@ -2614,7 +2614,7 @@ local Settings = {
     TargetNPC = nil,
 }
 
-getgenv().LuaForgeGame = Settings
+getgenv().FexGame = Settings
 
 -- ============ UTILITY FUNCTIONS ============
 local function GetRemote(name)
@@ -2728,7 +2728,7 @@ local function CreateESP(player)
     if player == LocalPlayer then return end
     
     local highlight = Instance.new("Highlight")
-    highlight.Name = "LuaForge_ESP"
+    highlight.Name = "Fex_ESP"
     highlight.FillColor = Color3.fromRGB(168, 85, 247)
     highlight.FillTransparency = 0.7
     highlight.OutlineColor = Color3.fromRGB(168, 85, 247)
@@ -2772,15 +2772,15 @@ UserInputService.InputBegan:Connect(function(input, gp)
         farming = Settings.AutoFarm
         if farming then
             task.spawn(FarmLoop)
-            print("[LuaForge] Auto Farm ON")
+            print("[Fex] Auto Farm ON")
         else
-            print("[LuaForge] Auto Farm OFF")
+            print("[Fex] Auto Farm OFF")
         end
     end
     
     if input.KeyCode == Settings.ESPKey then
         ToggleESP()
-        print("[LuaForge] ESP:", Settings.ESP and "ON" or "OFF")
+        print("[Fex] ESP:", Settings.ESP and "ON" or "OFF")
     end
 end)
 
@@ -2796,7 +2796,7 @@ end)
 
 Players.PlayerRemoving:Connect(RemoveESP)
 
-print("[LuaForge] Game script loaded!")
+print("[Fex] Game script loaded!")
 print("F5 = Auto Farm | F6 = ESP")
 print("Edit TargetItem in settings to match your game")`,
     usage: `**Controls:**
