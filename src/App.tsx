@@ -33,11 +33,11 @@ function Sidebar({
   const categories = SCRIPT_CATEGORIES[platform];
   
   return (
-    <aside className="w-[280px] bg-[#0f0f12] border-r border-[rgba(255,255,255,0.06)] flex flex-col max-lg:hidden">
+    <aside className="w-[280px] glass-subtle flex flex-col max-lg:hidden">
       {/* Logo */}
       <div className="p-4 pb-2">
         <div className="flex items-center gap-2.5 px-2 mb-4">
-          <div className="w-9 h-9 rounded-xl overflow-hidden shadow-lg shadow-purple-500/20 pulse-glow">
+          <div className="w-9 h-9 rounded-xl overflow-hidden glass-button pulse-glow">
             <img 
               src="https://cdn.discordapp.com/icons/1541928149174984784/fa29c0d41945a2ad221ca0cf0c0b7409.png?size=128" 
               alt="Fex Scripts Logo" 
@@ -51,7 +51,7 @@ function Sidebar({
         </div>
         <button
           onClick={onNew}
-          className="w-full px-4 py-2.5 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 rounded-xl flex items-center justify-center gap-2 text-[13px] font-semibold text-white shadow-lg shadow-purple-500/15 transition-all duration-200"
+          className="w-full px-4 py-2.5 glass-button flex items-center justify-center gap-2 text-[13px] font-semibold text-white transition-all duration-200"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
             <line x1="12" y1="5" x2="12" y2="19" />
@@ -73,8 +73,8 @@ function Sidebar({
               onClick={() => onPlatformChange(p.id)}
               className={`flex-1 px-2 py-1.5 rounded-lg text-[11px] font-medium transition-all duration-150 ${
                 platform === p.id
-                  ? `bg-gradient-to-r ${p.color} text-white shadow-md`
-                  : 'bg-[rgba(255,255,255,0.03)] text-[#a1a1aa] hover:bg-[rgba(255,255,255,0.06)] hover:text-white'
+                  ? `glass-button bg-gradient-to-r ${p.color} text-white shadow-md`
+                  : 'glass-button text-[#a1a1aa] hover:text-white'
               }`}
             >
               {p.icon} {p.name}
@@ -95,8 +95,8 @@ function Sidebar({
               onClick={() => onCategoryChange(cat.id)}
               className={`w-full px-3 py-2 rounded-lg flex items-center gap-2.5 text-left transition-all duration-150 ${
                 activeCategory === cat.id
-                  ? 'bg-purple-500/10 text-purple-300 border border-purple-500/20'
-                  : 'text-[#a1a1aa] hover:bg-[rgba(255,255,255,0.03)] hover:text-white border border-transparent'
+                  ? 'glass-button text-purple-300 border border-purple-500/30'
+                  : 'glass-button text-[#a1a1aa] hover:text-white'
               }`}
             >
               <span className="text-[14px]">{cat.icon}</span>
@@ -155,8 +155,8 @@ function CodeBlock({ code, lang }: { code: string; lang: string }) {
   };
 
   return (
-    <div className="relative group mb-4 rounded-xl overflow-hidden border border-[rgba(255,255,255,0.06)] bg-[#0a0a0c]">
-      <div className="flex items-center justify-between px-4 py-2.5 bg-[rgba(255,255,255,0.02)] border-b border-[rgba(255,255,255,0.06)]">
+    <div className="relative group mb-4 rounded-xl overflow-hidden glass-card">
+      <div className="flex items-center justify-between px-4 py-2.5 border-b border-[rgba(255,255,255,0.08)]">
         <div className="flex items-center gap-2">
           <div className="flex gap-1.5">
             <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
@@ -240,7 +240,7 @@ function MessageBubble({ message, isGenerating }: { message: Message; isGenerati
             </div>
           )}
           {message.text && (
-            <div className="bg-gradient-to-br from-purple-600 to-fuchsia-700 text-white px-4 py-3 rounded-2xl rounded-tr-sm text-[14px] leading-relaxed whitespace-pre-wrap shadow-lg shadow-purple-500/10">
+            <div className="glass-button bg-gradient-to-br from-purple-600/80 to-fuchsia-700/80 text-white px-4 py-3 rounded-2xl rounded-tr-sm text-[14px] leading-relaxed whitespace-pre-wrap">
               {message.text}
             </div>
           )}
@@ -291,7 +291,7 @@ function EmptyState({
     <div className="flex flex-col items-center text-center py-12 animate-slide-up">
       {/* Hero */}
       <div className="relative mb-6">
-        <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-2xl shadow-purple-500/20 pulse-glow">
+        <div className="w-20 h-20 rounded-2xl overflow-hidden glass pulse-glow">
           <img 
             src="https://cdn.discordapp.com/icons/1541928149174984784/fa29c0d41945a2ad221ca0cf0c0b7409.png?size=128" 
             alt="Fex Scripts Logo" 
@@ -310,7 +310,7 @@ function EmptyState({
         All-in-one executor scripts for Synapse X, Script-Ware, KRNL, Fluxus & more.
       </p>
       <div className="flex items-center gap-2 mb-8">
-        <span className="text-[11px] text-[#52525b] bg-[rgba(255,255,255,0.03)] px-2.5 py-1 rounded-full border border-[rgba(255,255,255,0.06)]">
+        <span className="text-[11px] text-[#52525b] glass-button px-2.5 py-1 rounded-full">
           {category.icon} {category.name}
         </span>
         <span className="text-[11px] text-[#52525b]">•</span>
@@ -323,7 +323,7 @@ function EmptyState({
           <button
             key={p}
             onClick={() => onSuggestion(p)}
-            className="group border border-[rgba(255,255,255,0.06)] bg-[rgba(255,255,255,0.02)] hover:bg-purple-500/5 hover:border-purple-500/20 rounded-xl p-3.5 text-left transition-all duration-200"
+            className="group glass-button hover:bg-purple-500/10 rounded-xl p-3.5 text-left transition-all duration-200"
           >
             <div className="flex items-start gap-2.5">
               <div className="w-6 h-6 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -343,7 +343,7 @@ function EmptyState({
       <div className="mt-8 flex flex-wrap items-center justify-center gap-2">
         <span className="text-[10px] text-[#52525b] uppercase tracking-wider mr-1">Works with:</span>
         {['Synapse X', 'Script-Ware', 'KRNL', 'Fluxus', 'Hydrogen', 'Delta'].map((e) => (
-          <span key={e} className="text-[10px] text-[#71717a] bg-[rgba(255,255,255,0.03)] px-2 py-0.5 rounded-full border border-[rgba(255,255,255,0.06)]">
+          <span key={e} className="text-[10px] text-[#71717a] glass-button px-2 py-0.5 rounded-full">
             {e}
           </span>
         ))}
@@ -563,7 +563,7 @@ export default function App() {
         {/* Drop overlay */}
         {dragOver && (
           <div className="absolute inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 animate-fade-in">
-            <div className="border-2 border-dashed border-purple-500 bg-purple-500/5 rounded-2xl p-8 text-center glow-purple">
+            <div className="glass border-2 border-dashed border-purple-500 p-8 text-center">
               <div className="text-4xl mb-3">📎</div>
               <p className="text-[16px] font-semibold text-white">Drop files to attach</p>
               <p className="mt-1 text-[13px] text-[#a1a1aa]">Up to 20 MB each · max 6 files</p>
@@ -572,7 +572,7 @@ export default function App() {
         )}
 
         {/* Header */}
-        <header className="h-14 border-b border-[rgba(255,255,255,0.06)] flex items-center gap-3 px-4 glass">
+        <header className="h-14 flex items-center gap-3 px-4 glass-subtle">
           {/* Mobile menu button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -586,7 +586,7 @@ export default function App() {
           </button>
 
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg overflow-hidden shadow-md shadow-purple-500/15">
+            <div className="w-7 h-7 rounded-lg overflow-hidden glass-button">
               <img 
                 src="https://cdn.discordapp.com/icons/1541928149174984784/fa29c0d41945a2ad221ca0cf0c0b7409.png?size=128" 
                 alt="Fex Scripts Logo" 
@@ -604,7 +604,7 @@ export default function App() {
             <select
               value={activeCategory}
               onChange={(e) => setActiveCategory(e.target.value)}
-              className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.08)] rounded-lg px-2 py-1.5 text-[11px] text-[#a1a1aa] outline-none"
+              className="glass-button px-2 py-1.5 text-[11px] text-[#a1a1aa] outline-none"
             >
               {SCRIPT_CATEGORIES[platform].map((c) => (
                 <option key={c.id} value={c.id}>{c.icon} {c.name}</option>
@@ -613,7 +613,7 @@ export default function App() {
           </div>
 
           <div className="ml-auto lg:ml-0 flex items-center gap-2">
-            <span className="hidden sm:inline text-[11px] text-[#52525b] bg-[rgba(255,255,255,0.03)] px-2.5 py-1 rounded-full border border-[rgba(255,255,255,0.06)]">
+            <span className="hidden sm:inline text-[11px] text-[#52525b] glass-button px-2.5 py-1 rounded-full">
               {currentCategory?.icon} {currentCategory?.name}
             </span>
           </div>
@@ -671,7 +671,7 @@ export default function App() {
           >
             {/* Category tag */}
             <div className="flex items-center gap-2 mb-3">
-              <div className="flex items-center gap-1.5 text-[11px] text-[#71717a] bg-[rgba(255,255,255,0.03)] px-2.5 py-1 rounded-full border border-[rgba(255,255,255,0.06)]">
+              <div className="flex items-center gap-1.5 text-[11px] text-[#71717a] glass-button px-2.5 py-1 rounded-full">
                 <span>{currentCategory?.icon}</span>
                 <span className="font-medium">{currentCategory?.name}</span>
               </div>
@@ -711,7 +711,7 @@ export default function App() {
             )}
 
             {/* Input box */}
-            <div className="bg-[#131316] border border-[rgba(255,255,255,0.08)] rounded-2xl overflow-hidden shadow-2xl shadow-black/40 focus-within:border-purple-500/30 focus-within:shadow-purple-500/5 transition-all duration-200">
+            <div className="glass-card overflow-hidden focus-within:border-purple-500/30 focus-within:shadow-purple-500/5 transition-all duration-200">
               <textarea
                 ref={textareaRef}
                 value={inputValue}
@@ -744,7 +744,7 @@ export default function App() {
                   <button
                     type="submit"
                     disabled={!inputValue.trim()}
-                    className="bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white px-4 py-2 rounded-xl text-[13px] font-semibold inline-flex items-center gap-1.5 disabled:opacity-30 disabled:cursor-not-allowed hover:from-purple-500 hover:to-fuchsia-500 transition-all shadow-md shadow-purple-500/15 disabled:shadow-none"
+                    className="glass-button bg-gradient-to-r from-purple-600/90 to-fuchsia-600/90 text-white px-4 py-2 text-[13px] font-semibold inline-flex items-center gap-1.5 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                   >
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>
                     Generate
