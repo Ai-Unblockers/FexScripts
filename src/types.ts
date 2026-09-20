@@ -17,4 +17,7 @@ export interface ChatSession {
   title: string;
   messages: Message[];
   createdAt: number;
+  platform?: string;
 }
+
+export type Platform = 'roblox' | 'minecraft' | 'cs2';

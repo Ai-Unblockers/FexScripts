@@ -1,4 +1,4 @@
-import { Attachment } from './types';
+import { Attachment, Platform } from './types';
 
 export function readImage(file: File): Promise<Attachment> {
   return new Promise((res, rej) => {
@@ -53,27 +53,56 @@ export function readVideo(file: File): Promise<Attachment> {
   });
 }
 
-export const STORAGE_KEY = 'luaforge.sessions.v3';
+export const STORAGE_KEY = 'fexscripts.sessions.v2';
 
-export const SCRIPT_CATEGORIES = [
-  { id: 'fex', name: 'Fex Scripts', icon: '⚡', desc: 'All-in-one mega script' },
-  { id: 'esp', name: 'ESP / Visual', icon: '👁️', desc: 'Wallhacks, tracers, chams' },
-  { id: 'aimbot', name: 'Aimbot', icon: '🎯', desc: 'Silent aim, lock-on' },
-  { id: 'movement', name: 'Movement', icon: '💨', desc: 'Fly, speed, noclip' },
-  { id: 'combat', name: 'Combat', icon: '⚔️', desc: 'Kill aura, auto parry' },
-  { id: 'autofarm', name: 'Auto Farm', icon: '🤖', desc: 'Auto collect, auto quest' },
-  { id: 'gui', name: 'GUI Scripts', icon: '🖥️', desc: 'Custom UIs, script hubs' },
-  { id: 'utility', name: 'Utility', icon: '🔧', desc: 'Server hop, anti-afk' },
-  { id: 'game', name: 'Game Specific', icon: '🎮', desc: 'Blox Fruits, Arsenal, etc.' },
-];
+export const PLATFORMS = {
+  roblox: { id: 'roblox' as Platform, name: 'Roblox', icon: '🎮', color: 'from-red-500 to-red-700' },
+  minecraft: { id: 'minecraft' as Platform, name: 'Minecraft', icon: '⛏️', color: 'from-green-500 to-green-700' },
+  cs2: { id: 'cs2' as Platform, name: 'CS2', icon: '🔫', color: 'from-orange-500 to-orange-700' },
+};
 
-export const QUICK_PROMPTS: Record<string, string[]> = {
-  fex: [
-    'Full Fex script with ESP, Aimbot, Fly, Speed, and Kill Aura',
-    'Complete Fex hub with GUI, Auto Farm, Aimbot, and ESP combined',
-    'Fex mega script: ESP + Aimbot + Movement + Combat + Auto Farm',
-    'All-in-one Fex script with every feature and toggle GUI',
+export const SCRIPT_CATEGORIES = {
+  roblox: [
+    { id: 'fex', name: 'Fex Scripts', icon: '⚡', desc: 'All-in-one mega script' },
+    { id: 'esp', name: 'ESP / Visual', icon: '👁️', desc: 'Wallhacks, tracers, chams' },
+    { id: 'aimbot', name: 'Aimbot', icon: '🎯', desc: 'Silent aim, lock-on' },
+    { id: 'movement', name: 'Movement', icon: '💨', desc: 'Fly, speed, noclip' },
+    { id: 'combat', name: 'Combat', icon: '⚔️', desc: 'Kill aura, auto parry' },
+    { id: 'autofarm', name: 'Auto Farm', icon: '🤖', desc: 'Auto collect, auto quest' },
+    { id: 'gui', name: 'GUI Scripts', icon: '🖥️', desc: 'Custom UIs, script hubs' },
+    { id: 'utility', name: 'Utility', icon: '🔧', desc: 'Server hop, anti-afk' },
+    { id: 'game', name: 'Game Specific', icon: '🎮', desc: 'Blox Fruits, Arsenal, etc.' },
   ],
+  minecraft: [
+    { id: 'plugins', name: 'Plugins', icon: '🔌', desc: 'Spigot/Bukkit plugins' },
+    { id: 'commands', name: 'Commands', icon: '⌨️', desc: 'Custom commands' },
+    { id: 'datapacks', name: 'Data Packs', icon: '📦', desc: 'Custom datapacks' },
+    { id: 'mods', name: 'Mods', icon: '🛠️', desc: 'Forge/Fabric mods' },
+    { id: 'scripts', name: 'Scripts', icon: '📜', desc: 'Skript/CommandBox' },
+    { id: 'worldedit', name: 'WorldEdit', icon: '🌍', desc: 'WorldEdit scripts' },
+    { id: 'economy', name: 'Economy', icon: '💰', desc: 'Shop & economy systems' },
+    { id: 'minigames', name: 'Minigames', icon: '🎲', desc: 'Custom minigames' },
+  ],
+  cs2: [
+    { id: 'plugins', name: 'Plugins', icon: '🔌', desc: 'SourceMod plugins' },
+    { id: 'configs', name: 'Configs', icon: '⚙️', desc: 'Server configs' },
+    { id: 'maps', name: 'Map Scripts', icon: '🗺️', desc: 'Map entity scripts' },
+    { id: 'workshop', name: 'Workshop', icon: '📦', desc: 'Workshop tools' },
+    { id: 'autoexec', name: 'Autoexec', icon: '⌨️', desc: 'Autoexec scripts' },
+    { id: 'training', name: 'Training', icon: '🎯', desc: 'Training scripts' },
+    { id: 'hud', name: 'Custom HUD', icon: '🖥️', desc: 'HUD modifications' },
+    { id: 'admin', name: 'Admin Tools', icon: '👑', desc: 'Admin commands' },
+  ],
+};
+
+export const QUICK_PROMPTS: Record<string, Record<string, string[]>> = {
+  roblox: {
+    fex: [
+      'Full Fex script with ESP, Aimbot, Fly, Speed, and Kill Aura',
+      'Complete Fex hub with GUI, Auto Farm, Aimbot, and ESP combined',
+      'Fex mega script: ESP + Aimbot + Movement + Combat + Auto Farm',
+      'All-in-one Fex script with every feature and toggle GUI',
+    ],
   esp: [
     'Player ESP with boxes, names, health bars, and distance',
     'Item ESP that highlights valuable items through walls',
@@ -117,12 +146,113 @@ export const QUICK_PROMPTS: Record<string, string[]> = {
     'Rejoin same server script',
     'Freecam with smooth controls',
   ],
-  game: [
-    'Blox Fruits auto farm with fruit snipe',
-    'Arsenal aimbot + ESP combo',
-    'Pet Simulator X auto hatch and farm',
-    'Murder Mystery 2 ESP for all roles',
-  ],
+    game: [
+      'Blox Fruits auto farm with fruit snipe',
+      'Arsenal aimbot + ESP combo',
+      'Pet Simulator X auto hatch and farm',
+      'Murder Mystery 2 ESP for all roles',
+    ],
+  },
+  minecraft: {
+    plugins: [
+      'Spigot plugin with custom commands and permissions',
+      'Bukkit plugin with player event listeners',
+      'Plugin with custom inventory GUI',
+      'Economy plugin with Vault integration',
+    ],
+    commands: [
+      'Custom teleport command with cooldown',
+      'Kit command with item sets',
+      'Warp system with multiple locations',
+      'Ban/kick command with reason and duration',
+    ],
+    datapacks: [
+      'Custom recipe datapack',
+      'Dimension datapack with custom world',
+      'Loot table datapack for custom drops',
+      'Advancement datapack with custom achievements',
+    ],
+    mods: [
+      'Forge mod with custom items and blocks',
+      'Fabric mod with custom mob AI',
+      'Mod with custom world generation',
+      'Mod with custom crafting recipes',
+    ],
+    scripts: [
+      'Skript for custom shop system',
+      'CommandBox script for admin tools',
+      'Skript for custom enchantments',
+      'Auto-broadcast message script',
+    ],
+    worldedit: [
+      'Custom selection and copy-paste script',
+      'Schematic loader with rotation',
+      'Terrain generator script',
+      'Bulk replace blocks script',
+    ],
+    economy: [
+      'Shop GUI with buy/sell system',
+      'Auction house plugin',
+      'Custom currency with shops',
+      'Player market system',
+    ],
+    minigames: [
+      'BedWars-style minigame',
+      'SkyWars with custom kits',
+      'Spleef minigame with powerups',
+      'Parkour course with checkpoints',
+    ],
+  },
+  cs2: {
+    plugins: [
+      'SourceMod plugin with custom commands',
+      'Admin menu plugin with player management',
+      'Custom game mode plugin',
+      'Stats tracking plugin',
+    ],
+    configs: [
+      'Server config for competitive play',
+      'Custom map cycle configuration',
+      'Weapon balance config',
+      'Anti-cheat configuration',
+    ],
+    maps: [
+      'Map entity script with triggers',
+      'Custom spawn points script',
+      'Map voting system',
+      'Dynamic objective script',
+    ],
+    workshop: [
+      'Workshop map with custom logic',
+      'Custom weapon skin pack',
+      'Workshop agent customization',
+      'Training map with scenarios',
+    ],
+    autoexec: [
+      'Autoexec for competitive settings',
+      'Custom crosshair and viewmodel config',
+      'Network optimization autoexec',
+      'Movement and sensitivity config',
+    ],
+    training: [
+      'Aim training map script',
+      'Spray control practice script',
+      'Utility practice with replays',
+      'Pre-aim training scenarios',
+    ],
+    hud: [
+      'Custom HUD with player stats',
+      'Kill feed modification',
+      'Radar enhancement script',
+      'Scoreboard customization',
+    ],
+    admin: [
+      'Admin slap/slay commands',
+      'Map voting admin panel',
+      'Player mute/ban system',
+      'Server rules enforcement',
+    ],
+  },
 };
 
 // ============ LOCAL SCRIPT TEMPLATES ============
@@ -2811,12 +2941,691 @@ print("Edit TargetItem in settings to match your game")`,
   }),
 };
 
-// Generate script based on category and prompt
-export function generateScript(categoryId: string, prompt: string): { intro: string; code: string; usage: string } {
+// ============ MINECRAFT TEMPLATES ============
+const MC_TEMPLATES: Record<string, (prompt: string) => { intro: string; code: string; usage: string }> = {
+  plugins: (prompt) => ({
+    intro: `Here's a complete Spigot/Bukkit plugin with custom commands and event listeners.`,
+    code: `package com.fexscripts.plugin;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class FexPlugin extends JavaPlugin implements Listener {
+    
+    @Override
+    public void onEnable() {
+        getLogger().info("Fex Plugin enabled!");
+        getServer().getPluginManager().registerEvents(this, this);
+    }
+    
+    @Override
+    public void onDisable() {
+        getLogger().info("Fex Plugin disabled!");
+    }
+    
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        player.sendMessage(ChatColor.GREEN + "Welcome to the server, " + player.getName() + "!");
+        Bukkit.broadcastMessage(ChatColor.YELLOW + player.getName() + " has joined the game!");
+    }
+    
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        if (cmd.getName().equalsIgnoreCase("fex")) {
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
+                player.sendMessage(ChatColor.AQUA + "Fex Scripts Plugin is running!");
+                player.sendMessage(ChatColor.GRAY + "Version: 1.0.0");
+            } else {
+                sender.sendMessage("This command can only be used by players!");
+            }
+            return true;
+        }
+        return false;
+    }
+}`,
+    usage: `**Setup:**
+1. Create plugin folder: \`plugins/FexPlugin/\`
+2. Place compiled .jar in the folder
+3. Create \`plugin.yml\` with main class reference
+4. Restart server
+
+**Commands:**
+- \`/fex\` — Shows plugin info
+
+**Events:**
+- Custom join message for players`,
+  }),
+  commands: (prompt) => ({
+    intro: `Here's a custom command script with cooldown and permissions.`,
+    code: `# Fex Scripts - Custom Command
+# Add to commands.yml or use a plugin like CommandBook
+
+command:
+  heal:
+    description: Heal yourself or another player
+    usage: /heal [player]
+    permission: fex.heal
+    permission-message: You don't have permission!
+  tpa:
+    description: Request teleport to a player
+    usage: /tpa <player>
+    permission: fex.tpa
+  spawn:
+    description: Teleport to spawn
+    usage: /spawn
+    permission: fex.spawn
+
+# Cooldowns (in seconds)
+cooldowns:
+  heal: 30
+  tpa: 60
+  spawn: 10`,
+    usage: `**Commands:**
+- \`/heal [player]\` — Heal yourself or another player (30s cooldown)
+- \`/tpa <player>\` — Request teleport to a player (60s cooldown)
+- \`/spawn\` — Teleport to spawn (10s cooldown)
+
+**Permissions:**
+- \`fex.heal\` — Use heal command
+- \`fex.tpa\` — Use TPA command
+- \`fex.spawn\` — Use spawn command`,
+  }),
+  datapacks: (prompt) => ({
+    intro: `Here's a custom data pack with recipes and loot tables.`,
+    code: `{
+  "pack": {
+    "pack_format": 15,
+    "description": "Fex Scripts Custom Data Pack"
+  }
+}
+
+// data/fex/recipes/diamond_sword.json
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " D ",
+    " D ",
+    " S "
+  ],
+  "key": {
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "item": "minecraft:diamond_sword",
+    "count": 1
+  }
+}`,
+    usage: `**Setup:**
+1. Create folder: \`datapacks/fex/\`
+2. Place \`pack.mcmeta\` in root
+3. Create \`data/\` folder with recipes/loot_tables
+4. Run \`/reload\` in-game
+
+**Features:**
+- Custom crafting recipe for diamond sword
+- Fully customizable`,
+  }),
+  mods: (prompt) => ({
+    intro: `Here's a basic Forge/Fabric mod template with custom items.`,
+    code: `package com.fexscripts.mod;
+
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
+
+@Mod("fexmod")
+public class FexMod {
+    public static final String MODID = "fexmod";
+    
+    public static final DeferredRegister<Item> ITEMS = 
+        DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
+    
+    public static final RegistryObject<Item> FEX_SWORD = ITEMS.register("fex_sword",
+        () -> new Item(new Item.Properties()
+            .tab(CreativeModeTab.TAB_COMBAT)
+            .stacksTo(1)
+            .rarity(Rarity.EPIC)));
+    
+    public FexMod() {
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        ITEMS.register(modEventBus);
+    }
+}`,
+    usage: `**Setup:**
+1. Install Forge/Fabric MDK
+2. Place code in \`src/main/java/\`
+3. Add item models in \`resources/models/\`
+4. Build with \`./gradlew build\`
+
+**Items Added:**
+- Fex Sword — Epic rarity combat item`,
+  }),
+  scripts: (prompt) => ({
+    intro: `Here's a Skript for a custom shop system.`,
+    code: `# Fex Scripts - Custom Shop
+# Requires: Skript plugin
+
+command /shop:
+    trigger:
+        open virtual chest inventory with size 3 named "&6Fex Shop" to player
+        format slot 0 of player with diamond sword named "&bFex Sword" with lore "&7Cost: &a$1000" to run:
+            if player's balance is greater than or equal to 1000:
+                remove 1000 from player's balance
+                give diamond sword to player
+                send "&aPurchase complete!" to player
+            else:
+                send "&cNot enough money!" to player
+
+on join:
+    wait 1 second
+    send "&6Welcome to &bFex Server&6!" to player
+    send "&7Type &a/shop &7to open the shop" to player`,
+    usage: `**Setup:**
+1. Install Skript plugin
+2. Place file in \`plugins/Skript/scripts/\`
+3. Run \`/sk reload fex-shop\`
+
+**Commands:**
+- \`/shop\` — Opens the shop GUI`,
+  }),
+  worldedit: (prompt) => ({
+    intro: `Here's a WorldEdit script for bulk operations.`,
+    code: `# Fex Scripts - WorldEdit Commands
+# Requires: WorldEdit plugin
+
+# Replace all stone with diamonds in selection
+//replace stone diamond_block
+
+# Set entire selection to obsidian
+//set obsidian
+
+# Copy and paste with rotation
+//copy
+//rotate 90
+//paste
+
+# Generate a sphere of glass
+//sphere glass 10
+
+# Create a hollow cube
+//hcube stone 20
+
+# Stack selection in a direction
+//stack 5 north
+
+# Smooth terrain in selection
+//smooth 4
+
+# Generate a forest
+//forest
+
+# Drain water/lava in radius
+//drain 50`,
+    usage: `**Commands:**
+- \`//replace <from> <to>\` — Replace blocks
+- \`//set <block>\` — Fill selection
+- \`//copy\` / \`//paste\` — Copy and paste
+- \`//sphere <block> <radius>\` — Create sphere
+- \`//forest\` — Generate forest`,
+  }),
+  economy: (prompt) => ({
+    intro: `Here's an economy shop system with buy/sell functionality.`,
+    code: `# Fex Scripts - Economy Shop
+# Requires: EssentialsX Economy + ChestShop
+
+# Shop sign format:
+# Line 1: [Shop] or player name
+# Line 2: Quantity
+# Line 3: Item name/ID
+# Line 4: Price (B for buy, S for sell)
+
+# Example shop signs:
+# [Shop]
+# 64
+# diamond
+# B 100
+
+# Economy commands:
+/bal - Check balance
+/pay <player> <amount> - Pay player
+/baltop - View richest players`,
+    usage: `**Shop Setup:**
+1. Place a chest
+2. Place a sign on the chest
+3. Format sign as shown above
+4. Stock the chest with items
+
+**Commands:**
+- \`/bal\` — Check balance
+- \`/pay <player> <amount>\` — Send money`,
+  }),
+  minigames: (prompt) => ({
+    intro: `Here's a BedWars-style minigame setup.`,
+    code: `# Fex Scripts - BedWars Minigame
+# Requires: BedWars1058 or similar plugin
+
+arena:
+  name: fex-bedwars
+  min-players: 8
+  max-players: 16
+  teams: 4
+  team-size: 4
+  
+  spawns:
+    red: {x: 0, y: 64, z: -50}
+    blue: {x: 0, y: 64, z: 50}
+    green: {x: -50, y: 64, z: 0}
+    yellow: {x: 50, y: 64, z: 0}
+  
+  beds:
+    red: {x: 0, y: 65, z: -45}
+    blue: {x: 0, y: 65, z: 45}
+    green: {x: -45, y: 65, z: 0}
+    yellow: {x: 45, y: 65, z: 0}`,
+    usage: `**Setup:**
+1. Install BedWars1058 plugin
+2. Create arena with \`/bw edit\`
+3. Set team spawns and beds
+4. Save arena with \`/bw save\`
+
+**Commands:**
+- \`/bw join\` — Join lobby
+- \`/bw join <arena>\` — Join game`,
+  }),
+};
+
+// ============ CS2 TEMPLATES ============
+const CS2_TEMPLATES: Record<string, (prompt: string) => { intro: string; code: string; usage: string }> = {
+  plugins: (prompt) => ({
+    intro: `Here's a SourceMod plugin for CS2 with custom commands.`,
+    code: `#include <sourcemod>
+#include <sdktools>
+#include <cstrike>
+
+#pragma semicolon 1
+#pragma newdecls required
+
+#define PLUGIN_VERSION "1.0.0"
+
+public Plugin myinfo = {
+    name = "Fex Scripts CS2 Plugin",
+    author = "Fex",
+    description = "Custom CS2 commands and features",
+    version = PLUGIN_VERSION,
+    url = ""
+};
+
+public void OnPluginStart() {
+    RegConsoleCmd("sm_hp", Command_Heal, "Heal yourself");
+    RegConsoleCmd("sm_armor", Command_Armor, "Give full armor");
+    RegConsoleCmd("sm_nades", Command_Nades, "Give all nades");
+    
+    CreateConVar("sm_fex_version", PLUGIN_VERSION, "Fex Plugin Version", FCVAR_NOTIFY);
+    AutoExecConfig(true, "fex_cs2");
+}
+
+public Action Command_Heal(int client, int args) {
+    if (!IsValidClient(client)) {
+        ReplyToCommand(client, "Invalid client!");
+        return Plugin_Handled;
+    }
+    
+    SetEntityHealth(client, 100);
+    PrintToChat(client, "\\x04[Fex] \\x01You have been healed!");
+    return Plugin_Handled;
+}
+
+public Action Command_Armor(int client, int args) {
+    if (!IsValidClient(client)) return Plugin_Handled;
+    
+    SetEntProp(client, Prop_Data, "m_ArmorValue", 100);
+    GivePlayerItem(client, "item_kevlar");
+    GivePlayerItem(client, "item_assaultsuit");
+    PrintToChat(client, "\\x04[Fex] \\x01Full armor given!");
+    return Plugin_Handled;
+}
+
+bool IsValidClient(int client) {
+    return (client > 0 && client <= MaxClients && IsClientInGame(client));
+}`,
+    usage: `**Setup:**
+1. Compile .sp to .smx
+2. Place in \`addons/sourcemod/plugins/\`
+3. Restart server or use \`sm plugins load\`
+
+**Commands:**
+- \`sm_hp\` — Heal to 100 HP
+- \`sm_armor\` — Full armor + helmet
+- \`sm_nades\` — All grenades`,
+  }),
+  configs: (prompt) => ({
+    intro: `Here's a competitive CS2 server configuration.`,
+    code: `// Fex Scripts - Competitive Server Config
+// Place in cfg/sourcemod/fex_competitive.cfg
+
+// Server Settings
+hostname "Fex Competitive Server"
+sv_cheats 0
+sv_pure 1
+sv_lan 0
+
+// Game Mode
+game_type 0
+game_mode 1
+mp_maxrounds 30
+mp_overtime_enable 1
+
+// Round Settings
+mp_roundtime 1.92
+mp_freezetime 15
+mp_buytime 20
+mp_c4timer 40
+mp_startmoney 800
+
+// Team Settings
+mp_friendly_fire 1
+mp_tkpunish 1
+
+// Movement
+sv_airaccelerate 12
+sv_accelerate 5.5
+
+// Anti-Cheat
+sv_pure_kick_clients 1`,
+    usage: `**Setup:**
+1. Place config in \`cfg/sourcemod/\`
+2. Load with: \`exec sourcemod/fex_competitive\`
+
+**Features:**
+- MR15 competitive format
+- 1.92 min round time
+- Friendly fire enabled
+- Overtime enabled`,
+  }),
+  autoexec: (prompt) => ({
+    intro: `Here's a competitive autoexec config for optimal settings.`,
+    code: `// Fex Scripts - Competitive Autoexec
+// Place in cs2/cfg/autoexec.cfg
+
+// Network
+cl_interp 0
+cl_interp_ratio 1
+rate 786432
+
+// Crosshair
+cl_crosshairstyle 4
+cl_crosshairsize 2
+cl_crosshairthickness 1
+cl_crosshairgap -2
+cl_crosshaircolor 1
+
+// Viewmodel
+viewmodel_fov 68
+viewmodel_offset_x 2.5
+viewmodel_offset_y 0
+viewmodel_offset_z -1.5
+
+// Mouse
+sensitivity 1.5
+m_rawinput 1
+
+// Binds
+bind "MWHEELDOWN" "+jump"
+bind "mouse5" "+lookatweapon"`,
+    usage: `**Setup:**
+1. Place in \`cs2/cfg/autoexec.cfg\`
+2. Add to launch options: \`+exec autoexec\`
+3. Restart game`,
+  }),
+  training: (prompt) => ({
+    intro: `Here's a training mode plugin for aim practice.`,
+    code: `#include <sourcemod>
+#include <sdktools>
+
+public Plugin myinfo = {
+    name = "Fex Training Mode",
+    author = "Fex",
+    version = "1.0.0"
+};
+
+ConVar g_cvTraining;
+
+public void OnPluginStart() {
+    g_cvTraining = CreateConVar("sm_training", "0", "Enable training mode");
+    RegConsoleCmd("sm_train", Command_Training, "Toggle training mode");
+    RegConsoleCmd("sm_bot", Command_SpawnBot, "Spawn training bot");
+    RegConsoleCmd("sm_god", Command_God, "Toggle god mode");
+}
+
+public Action Command_Training(int client, int args) {
+    int enabled = GetConVarInt(g_cvTraining);
+    SetConVarInt(g_cvTraining, enabled ? 0 : 1);
+    PrintToChat(client, "Training mode: %s", enabled ? "OFF" : "ON");
+    return Plugin_Handled;
+}
+
+public Action Command_SpawnBot(int client, int args) {
+    ServerCommand("bot_add_ct");
+    PrintToChat(client, "Bot spawned!");
+    return Plugin_Handled;
+}
+
+public Action Command_God(int client, int args) {
+    SetEntityHealth(client, 9999);
+    PrintToChat(client, "God mode activated!");
+    return Plugin_Handled;
+}`,
+    usage: `**Commands:**
+- \`sm_train\` — Toggle training mode
+- \`sm_bot\` — Spawn training bot
+- \`sm_god\` — God mode (9999 HP)`,
+  }),
+  hud: (prompt) => ({
+    intro: `Here's a custom HUD configuration.`,
+    code: `// Fex Scripts - Custom HUD Config
+// Place in cfg/fex_hud.cfg
+
+// Radar
+cl_radar_scale 0.7
+cl_radar_icon_scale_min 100
+
+// Colors
+cl_hud_color 1
+cl_hud_backgroundalpha 0.8
+
+// Net Graph
+net_graph 1
+net_graphpos 1
+
+// Viewmodel
+viewmodel_fov 68
+viewmodel_offset_x 2.5
+viewmodel_offset_y 0
+viewmodel_offset_z -1.5
+
+// Crosshair
+cl_crosshairstyle 4
+cl_crosshairsize 2
+cl_crosshairthickness 1
+cl_crosshairgap -2
+cl_crosshaircolor 1`,
+    usage: `**Setup:**
+1. Place in \`cfg/fex_hud.cfg\`
+2. Add to autoexec: \`exec fex_hud\`
+3. Or run in console: \`exec fex_hud\``,
+  }),
+  admin: (prompt) => ({
+    intro: `Here's an admin tools plugin with player management.`,
+    code: `#include <sourcemod>
+#include <sdktools>
+
+public Plugin myinfo = {
+    name = "Fex Admin Tools",
+    author = "Fex",
+    version = "1.0.0"
+};
+
+public void OnPluginStart() {
+    RegAdminCmd("sm_slap", Command_Slap, ADMFLAG_KICK, "Slap a player");
+    RegAdminCmd("sm_slay", Command_Slay, ADMFLAG_KICK, "Slay a player");
+    RegAdminCmd("sm_kick", Command_Kick, ADMFLAG_KICK, "Kick a player");
+    RegAdminCmd("sm_ban", Command_Ban, ADMFLAG_BAN, "Ban a player");
+}
+
+public Action Command_Slap(int client, int args) {
+    if (args < 1) {
+        ReplyToCommand(client, "Usage: sm_slap <player> [damage]");
+        return Plugin_Handled;
+    }
+    
+    char arg[64];
+    GetCmdArg(1, arg, sizeof(arg));
+    int target = FindTarget(client, arg);
+    
+    if (target == -1) return Plugin_Handled;
+    
+    int damage = 0;
+    if (args >= 2) {
+        char dmg[16];
+        GetCmdArg(2, dmg, sizeof(dmg));
+        damage = StringToInt(dmg);
+    }
+    
+    SlapPlayer(target, damage, true);
+    ShowActivity2(client, "\\x04[Fex Admin]\\x01", "Slapped %N", target);
+    return Plugin_Handled;
+}
+
+public Action Command_Kick(int client, int args) {
+    if (args < 1) {
+        ReplyToCommand(client, "Usage: sm_kick <player> [reason]");
+        return Plugin_Handled;
+    }
+    
+    char arg[64], reason[128];
+    GetCmdArg(1, arg, sizeof(arg));
+    
+    if (args >= 2) {
+        GetCmdArg(2, reason, sizeof(reason));
+    } else {
+        reason = "Kicked by admin";
+    }
+    
+    int target = FindTarget(client, arg);
+    if (target == -1) return Plugin_Handled;
+    
+    KickClient(target, "%s", reason);
+    return Plugin_Handled;
+}`,
+    usage: `**Commands:**
+- \`sm_slap <player> [damage]\` — Slap player
+- \`sm_slay <player>\` — Kill player
+- \`sm_kick <player> [reason]\` — Kick player
+- \`sm_ban <player> <time> [reason]\` — Ban player`,
+  }),
+  maps: (prompt) => ({
+    intro: `Here's a map entity script for custom triggers.`,
+    code: `// Fex Scripts - Map Entity Script
+// Hammer Editor entity logic
+
+// TRIGGER HURT
+// Create trigger_hurt entity
+// Properties:
+//   Damage: 100
+//   Damage Type: 1 (Generic)
+
+// TRIGGER TELEPORT
+// Create trigger_teleport
+// Properties:
+//   Remote Destination: info_teleport_destination
+
+// LOGIC RELAY
+// Create logic_relay
+// Name: fex_relay
+// Outputs:
+//   OnTrigger -> !activator -> AddOutput "health 100"
+
+// GAME TEXT
+// Create game_text
+// Properties:
+//   Message: "Welcome to Fex Map!"
+//   Color: "255 255 255"`,
+    usage: `**Entity Setup:**
+1. Open map in Hammer Editor
+2. Add entities as shown above
+3. Set properties and outputs
+4. Compile map`,
+  }),
+  workshop: (prompt) => ({
+    intro: `Here's a workshop map setup guide.`,
+    code: `// Fex Scripts - Workshop Map Setup
+
+// MAP STRUCTURE
+// fex_map/
+// ├── fex_map.vpk
+// ├── fex_map.bsp
+// ├── materials/
+// ├── models/
+// └── sound/
+
+// WORKSHOP CFG
+mapname fex_map
+title "Fex Custom Map"
+description "A custom CS2 map by Fex Scripts"
+tags "competitive, aim, training"
+
+// NAV MESH
+// Commands:
+//   nav_generate
+//   nav_save
+
+// PUBLISH COMMANDS
+//   workshop_build fex_map
+//   workshop_submit fex_map`,
+    usage: `**Setup:**
+1. Create map folder structure
+2. Design map in Hammer Editor
+3. Generate nav mesh
+4. Package as .vpk
+5. Upload to Steam Workshop`,
+  }),
+};
+
+// Generate script based on platform, category, and prompt
+export function generateScript(platform: Platform, categoryId: string, prompt: string): { intro: string; code: string; usage: string } {
+  if (platform === 'minecraft') {
+    const template = MC_TEMPLATES[categoryId];
+    if (template) return template(prompt);
+  } else if (platform === 'cs2') {
+    const template = CS2_TEMPLATES[categoryId];
+    if (template) return template(prompt);
+  }
+  
+  // Default to Roblox templates
   const template = SCRIPT_TEMPLATES[categoryId];
   if (template) {
     return template(prompt);
   }
   // Fallback generic script
-  return SCRIPT_TEMPLATES.esp(prompt);
+  return SCRIPT_TEMPLATES.fex(prompt);
 }

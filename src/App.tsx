@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Message, Attachment, ChatSession } from './types';
+import { Message, Attachment, ChatSession, Platform } from './types';
 import {
   readImage,
   readVideo,
   STORAGE_KEY,
+  PLATFORMS,
   SCRIPT_CATEGORIES,
   QUICK_PROMPTS,
   generateScript,
@@ -17,6 +18,8 @@ function Sidebar({
   onNew,
   activeCategory,
   onCategoryChange,
+  platform,
+  onPlatformChange,
 }: {
   sessions: ChatSession[];
   activeId: string;
@@ -24,7 +27,11 @@ function Sidebar({
   onNew: () => void;
   activeCategory: string;
   onCategoryChange: (id: string) => void;
+  platform: Platform;
+  onPlatformChange: (p: Platform) => void;
 }) {
+  const categories = SCRIPT_CATEGORIES[platform];
+  
   return (
     <aside className="w-[280px] bg-[#0f0f12] border-r border-[rgba(255,255,255,0.06)] flex flex-col max-lg:hidden">
       {/* Logo */}
@@ -39,7 +46,7 @@ function Sidebar({
           </div>
           <div>
             <div className="text-[15px] font-bold gradient-text">Fex Scripts</div>
-            <div className="text-[10px] text-[#52525b] tracking-wider font-medium">ALL-IN-ONE HUB</div>
+            <div className="text-[10px] text-[#52525b] tracking-wider font-medium">MULTI-PLATFORM</div>
           </div>
         </div>
         <button
@@ -54,13 +61,35 @@ function Sidebar({
         </button>
       </div>
 
+      {/* Platform Selector */}
+      <div className="px-3 pt-2 pb-1">
+        <div className="text-[11px] font-semibold uppercase tracking-wider text-[#52525b] px-2 mb-2">
+          Platform
+        </div>
+        <div className="flex gap-1">
+          {Object.values(PLATFORMS).map((p) => (
+            <button
+              key={p.id}
+              onClick={() => onPlatformChange(p.id)}
+              className={`flex-1 px-2 py-1.5 rounded-lg text-[11px] font-medium transition-all duration-150 ${
+                platform === p.id
+                  ? `bg-gradient-to-r ${p.color} text-white shadow-md`
+                  : 'bg-[rgba(255,255,255,0.03)] text-[#a1a1aa] hover:bg-[rgba(255,255,255,0.06)] hover:text-white'
+              }`}
+            >
+              {p.icon} {p.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Categories */}
       <div className="px-3 pt-3 pb-1">
         <div className="text-[11px] font-semibold uppercase tracking-wider text-[#52525b] px-2 mb-2">
           Script Categories
         </div>
         <div className="space-y-0.5">
-          {SCRIPT_CATEGORIES.map((cat) => (
+          {categories.map((cat) => (
             <button
               key={cat.id}
               onClick={() => onCategoryChange(cat.id)}
@@ -248,12 +277,15 @@ function MessageBubble({ message, isGenerating }: { message: Message; isGenerati
 function EmptyState({
   activeCategory,
   onSuggestion,
+  platform,
 }: {
   activeCategory: string;
   onSuggestion: (s: string) => void;
+  platform: Platform;
 }) {
-  const category = SCRIPT_CATEGORIES.find((c) => c.id === activeCategory) || SCRIPT_CATEGORIES[0];
-  const prompts = QUICK_PROMPTS[activeCategory] || QUICK_PROMPTS.esp;
+  const categories = SCRIPT_CATEGORIES[platform];
+  const category = categories.find((c) => c.id === activeCategory) || categories[0];
+  const prompts = QUICK_PROMPTS[platform]?.[activeCategory] || QUICK_PROMPTS[platform]?.fex || [];
 
   return (
     <div className="flex flex-col items-center text-center py-12 animate-slide-up">
@@ -331,6 +363,7 @@ export default function App() {
     }
   });
   const [activeId, setActiveId] = useState<string>('');
+  const [platform, setPlatform] = useState<Platform>('roblox');
   const [activeCategory, setActiveCategory] = useState('fex');
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [generating, setGenerating] = useState(false);
@@ -368,19 +401,21 @@ export default function App() {
 
   const createNewSession = useCallback(() => {
     const id = Date.now().toString(36) + Math.random().toString(36).slice(2);
-    const cat = SCRIPT_CATEGORIES.find((c) => c.id === activeCategory);
+    const categories = SCRIPT_CATEGORIES[platform];
+    const cat = categories.find((c) => c.id === activeCategory);
     const newSession: ChatSession = {
       id,
       title: `${cat?.icon || '📜'} New ${cat?.name || 'Script'}`,
       messages: [],
       createdAt: Date.now(),
+      platform,
     };
     setSessions((prev) => [newSession, ...prev]);
     setActiveId(id);
     setAttachments([]);
     setError('');
     setMobileMenuOpen(false);
-  }, [activeCategory]);
+  }, [activeCategory, platform]);
 
   useEffect(() => {
     if (sessions.length === 0) {
@@ -415,7 +450,8 @@ export default function App() {
     if (!text || generating) return;
     setError('');
 
-    const category = SCRIPT_CATEGORIES.find((c) => c.id === activeCategory);
+    const categories = SCRIPT_CATEGORIES[platform];
+    const category = categories.find((c) => c.id === activeCategory);
     const userMsg: Message = {
       role: 'user',
       text,
@@ -446,7 +482,7 @@ export default function App() {
     await new Promise((resolve) => setTimeout(resolve, 600 + Math.random() * 800));
 
     // Generate script locally
-    const result = generateScript(activeCategory, text);
+    const result = generateScript(platform, activeCategory, text);
     const fullResponse = `${result.intro}\n\n\`\`\`lua\n${result.code}\n\`\`\`\n\n${result.usage}`;
 
     // Simulate streaming effect
@@ -502,7 +538,7 @@ export default function App() {
     }
   };
 
-  const currentCategory = SCRIPT_CATEGORIES.find((c) => c.id === activeCategory);
+  const currentCategory = SCRIPT_CATEGORIES[platform].find((c) => c.id === activeCategory);
 
   return (
     <div className="flex h-screen bg-[#09090b] text-[#fafafa]">
@@ -513,6 +549,8 @@ export default function App() {
         onNew={createNewSession}
         activeCategory={activeCategory}
         onCategoryChange={setActiveCategory}
+        platform={platform}
+        onPlatformChange={(p) => { setPlatform(p); setActiveCategory(SCRIPT_CATEGORIES[p][0].id); }}
       />
 
       <main
@@ -568,7 +606,7 @@ export default function App() {
               onChange={(e) => setActiveCategory(e.target.value)}
               className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.08)] rounded-lg px-2 py-1.5 text-[11px] text-[#a1a1aa] outline-none"
             >
-              {SCRIPT_CATEGORIES.map((c) => (
+              {SCRIPT_CATEGORIES[platform].map((c) => (
                 <option key={c.id} value={c.id}>{c.icon} {c.name}</option>
               ))}
             </select>
@@ -592,6 +630,8 @@ export default function App() {
                 onNew={createNewSession}
                 activeCategory={activeCategory}
                 onCategoryChange={(c) => { setActiveCategory(c); }}
+                platform={platform}
+                onPlatformChange={(p) => { setPlatform(p); setActiveCategory(SCRIPT_CATEGORIES[p][0].id); }}
               />
             </div>
           </div>
@@ -607,6 +647,7 @@ export default function App() {
                   setInputValue(s);
                   textareaRef.current?.focus();
                 }}
+                platform={platform}
               />
             ) : (
               <div className="flex flex-col gap-6">

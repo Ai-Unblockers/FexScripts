@@ -1,188 +1,217 @@
-# LuaForge — Roblox Executor Script Generator
+# Fex Scripts - Multi-Platform Script Generator
 
-A modern, AI-powered Lua script generator specifically designed for Roblox executors (Synapse X, Script-Ware, KRNL, Fluxus, Hydrogen, Delta, etc.).
+A powerful, AI-powered script generator for **Roblox**, **Minecraft**, and **Counter-Strike 2**. Generate complete, working scripts for executors, plugins, mods, and server configurations.
 
-![LuaForge](https://img.shields.io/badge/LuaForge-v2.0-purple?style=for-the-badge)
-![Executor Scripts](https://img.shields.io/badge/Executor-Ready-a855f7?style=for-the-badge)
+![Fex Scripts](https://img.shields.io/badge/Fex_Scripts-v3.0-purple?style=for-the-badge)
+![Platforms](https://img.shields.io/badge/Platforms-Roblox%20%7C%20Minecraft%20%7C%20CS2-blue?style=for-the-badge)
 
-## 🎯 Features
+## 🎮 Supported Platforms
 
-### Script Categories
-- **ESP / Visual** 👁️ — Wallhacks, tracers, chams, item ESP
-- **Aimbot** 🎯 — Silent aim, lock-on, prediction, FOV circles
-- **Movement** 💨 — Fly, speed, noclip, teleport, infinite jump
-- **Combat** ⚔️ — Kill aura, auto parry, hitbox expander
-- **Auto Farm** 🤖 — Auto collect, auto quest, auto click
-- **GUI Scripts** 🖥️ — Custom UIs, script hubs, key systems
-- **Utility** 🔧 — Server hop, anti-AFK, freecam, rejoin
-- **Game Specific** 🎮 — Blox Fruits, Arsenal, Pet Simulator, etc.
+### 🎮 Roblox
+Generate Lua scripts for executors like Synapse X, Script-Ware, KRNL, Fluxus, Hydrogen, and Delta.
 
-### Technical Features
-- ✅ Complete, working executor scripts
-- ✅ Uses executor APIs: `getgenv()`, `hookfunction`, `loadstring`, `request`, etc.
-- ✅ Self-contained scripts ready to paste
-- ✅ Error handling with `pcall`
-- ✅ GUI toggle systems
-- ✅ Anti-detection techniques
-- ✅ Copy-to-clipboard functionality
-- ✅ Drag & drop image/video support
-- ✅ Streaming AI responses
-- ✅ Session persistence
-- ✅ Mobile responsive design
+**Categories:**
+- ⚡ **Fex Scripts** - All-in-one mega scripts
+- 👁️ **ESP / Visual** - Wallhacks, tracers, chams
+- 🎯 **Aimbot** - Silent aim, lock-on, prediction
+- 💨 **Movement** - Fly, speed, noclip, teleport
+- ⚔️ **Combat** - Kill aura, auto parry, hitbox expander
+- 🤖 **Auto Farm** - Auto collect, auto quest
+- 🖥️ **GUI Scripts** - Custom UIs, script hubs
+- 🔧 **Utility** - Server hop, anti-AFK, freecam
+- 🎮 **Game Specific** - Blox Fruits, Arsenal, Pet Simulator, etc.
 
-## 🚀 Getting Started
+### ⛏️ Minecraft
+Generate Java plugins, commands, data packs, mods, and server scripts.
 
-### Prerequisites
-1. An OpenRouter API key (or compatible OpenAI API)
-2. A Roblox executor (Synapse X, Script-Ware, KRNL, Fluxus, etc.)
+**Categories:**
+- 🔌 **Plugins** - Spigot/Bukkit plugins with custom commands
+- ⌨️ **Commands** - Custom commands with cooldowns and permissions
+- 📦 **Data Packs** - Custom recipes, loot tables, advancements
+- 🛠️ **Mods** - Forge/Fabric mods with custom items and blocks
+- 📜 **Scripts** - Skript/CommandBox scripts
+- 🌍 **WorldEdit** - WorldEdit commands and scripts
+- 💰 **Economy** - Shop systems, auction houses, custom currency
+- 🎲 **Minigames** - BedWars, SkyWars, Spleef, Parkour
 
-### Setup
-1. Open the application in your browser
-2. Click the **Settings** button (gear icon)
-3. Enter your API credentials:
-   - **API Endpoint**: `https://openrouter.ai/api/v1` (default)
-   - **API Key**: Your OpenRouter API key
-   - **Model**: `openai/gpt-4o-mini` (default) or any compatible model
-4. Click **Save Changes**
+### 🔫 Counter-Strike 2
+Generate SourceMod plugins, server configs, and workshop tools.
 
-### Usage
-1. **Select a category** from the sidebar (ESP, Aimbot, Movement, etc.)
-2. **Click "New Script"** or use a quick prompt
-3. **Describe what you want** in the input box
-4. **Press Enter** or click **Generate**
-5. **Copy the script** using the copy button in the code block
-6. **Paste into your executor** and execute
+**Categories:**
+- 🔌 **Plugins** - SourceMod plugins with custom commands
+- ⚙️ **Configs** - Server configurations for competitive play
+- 🗺️ **Map Scripts** - Map entity scripts and triggers
+- 📦 **Workshop** - Workshop map setup and publishing
+- ⌨️ **Autoexec** - Competitive autoexec configurations
+- 🎯 **Training** - Aim training and practice scripts
+- 🖥️ **Custom HUD** - HUD modifications and crosshair configs
+- 👑 **Admin Tools** - Admin commands and player management
 
-## 📝 Example Prompts
+## 🚀 Features
 
-### ESP
+### ✨ Core Features
+- **Multi-Platform Support** - Generate scripts for Roblox, Minecraft, and CS2
+- **Platform-Specific Categories** - Each platform has its own set of script categories
+- **Quick Prompts** - Pre-built prompts for common script types
+- **One-Click Copy** - Copy generated scripts instantly
+- **Session Management** - Save and manage multiple script sessions
+- **Drag & Drop** - Attach images and videos for context
+- **Responsive Design** - Works on desktop and mobile
+
+### 🎨 UI Features
+- **Dark Theme** - Modern dark interface with purple accents
+- **Platform Selector** - Easy switching between Roblox, Minecraft, and CS2
+- **Category Browser** - Browse script categories for each platform
+- **Animated Transitions** - Smooth animations and transitions
+- **Code Highlighting** - Syntax-highlighted code blocks
+- **Custom Logo** - Branded with the Fex Scripts logo
+
+## 📖 How to Use
+
+### 1. Select a Platform
+Click on one of the platform buttons in the sidebar:
+- 🎮 **Roblox** - For executor scripts
+- ⛏️ **Minecraft** - For plugins, mods, and data packs
+- 🔫 **CS2** - For SourceMod plugins and configs
+
+### 2. Choose a Category
+Select a script category from the list. Each platform has its own set of categories tailored to that game.
+
+### 3. Describe Your Script
+Type a description of what you want in the input box, or click one of the quick prompts.
+
+### 4. Generate
+Click the **Generate** button or press Enter. The script will be generated with a streaming animation.
+
+### 5. Copy and Use
+Click the **Copy Script** button in the code block to copy the generated script. Paste it into your executor, plugin folder, or server config.
+
+## 💡 Example Prompts
+
+### Roblox
+- "Full Fex script with ESP, Aimbot, Fly, Speed, and Kill Aura"
 - "Player ESP with boxes, names, health bars, and distance"
-- "Item ESP that highlights valuable items through walls"
-- "Chams ESP with rainbow outline effect"
-
-### Aimbot
 - "Silent aim that works with any gun script"
-- "Lock-on aimbot with prediction and FOV circle"
-- "Aimbot with team check and visibility check"
-
-### Movement
 - "Fly script with toggle key (E) and speed control"
-- "Speed hack with adjustable walkspeed"
-- "Noclip that goes through all parts"
-
-### Combat
-- "Kill aura that hits all nearby players"
-- "Auto parry that blocks every attack"
-- "Hitbox expander for melee weapons"
-
-### Auto Farm
-- "Auto farm script with GUI toggle"
-- "Auto collect all items on the map"
-- "Auto quest completer"
-
-### Game Specific
 - "Blox Fruits auto farm with fruit snipe"
-- "Arsenal aimbot + ESP combo"
-- "Pet Simulator X auto hatch and farm"
 
-## 🎨 UI Features
+### Minecraft
+- "Spigot plugin with custom commands and permissions"
+- "Custom teleport command with cooldown"
+- "Custom recipe datapack"
+- "Forge mod with custom items and blocks"
+- "Skript for custom shop system"
+- "BedWars-style minigame"
 
-### Modern Design
-- Dark theme with purple/fuchsia gradients
-- Glassmorphism effects
-- Smooth animations
-- Responsive layout (mobile-friendly)
-- Syntax-highlighted code blocks
-- One-click copy functionality
+### CS2
+- "SourceMod plugin with custom commands"
+- "Server config for competitive play"
+- "Autoexec for competitive settings"
+- "Aim training map script"
+- "Custom HUD with player stats"
+- "Admin slap/slay commands"
 
-### Sidebar
-- Script category selector
-- Recent scripts history
-- Quick access to all features
-
-### Code Blocks
-- macOS-style window controls
-- Language indicator
-- "Executor Script" badge
-- Copy button with feedback
-- Scrollable for long scripts
-
-## 🔧 Technical Details
-
-### System Prompt
-The AI is configured to generate executor-specific scripts using:
-- `getgenv()` for persistent variables
-- `getrenv()` for game environment access
-- `hookfunction` for function hooking
-- `loadstring` for dynamic code execution
-- `request` for HTTP requests
-- `getgc()` for garbage collection access
-- `getinstances()` for instance enumeration
-- `fireclickdetector()` for detector firing
-- `fireserver()` for remote event firing
-
-### Supported Executors
-- ✅ Synapse X
-- ✅ Script-Ware
-- ✅ KRNL
-- ✅ Fluxus
-- ✅ Hydrogen
-- ✅ Delta
-- ✅ Any executor with standard Lua environment
-
-## 🛠️ Development
+## 🛠️ Technical Details
 
 ### Tech Stack
-- React 18
-- TypeScript
-- Tailwind CSS v4
-- Vite
-- OpenAI-compatible API
+- **React 18** - UI framework
+- **TypeScript** - Type-safe development
+- **Tailwind CSS v4** - Styling
+- **Vite** - Build tool
+- **Local Generation** - No API keys required
 
-### Project Structure
-```
-src/
-├── App.tsx          # Main application component
-├── types.ts         # TypeScript type definitions
-├── utils.ts         # Utility functions & constants
-├── index.css        # Global styles
-└── main.tsx         # Entry point
-```
+### Script Templates
+The app uses pre-built script templates for each platform and category. Templates include:
+- Complete, working code
+- Proper error handling
+- Usage instructions
+- Setup guides
+- Customization options
 
-### Build
+### Platform-Specific Features
+
+#### Roblox
+- Uses executor APIs: `getgenv()`, `hookfunction`, `loadstring`, `request`, etc.
+- Includes anti-detection techniques
+- GUI toggle systems
+- Compatible with all major executors
+
+#### Minecraft
+- Java plugin templates with proper structure
+- Bukkit/Spigot API usage
+- Data pack JSON structures
+- Forge/Fabric mod templates
+- Skript syntax
+
+#### CS2
+- SourceMod plugin structure
+- SourcePawn syntax
+- Server config formats
+- Hammer Editor entity logic
+- Workshop publishing guides
+
+## 📦 Installation
+
+### Prerequisites
+- Node.js 18+ and npm
+
+### Setup
 ```bash
+# Install dependencies
 npm install
+
+# Run development server
+npm run dev
+
+# Build for production
 npm run build
 ```
 
-### Development
-```bash
-npm run dev
-```
+### Build Output
+The built application is in the `dist/` folder and can be deployed to any static hosting service.
+
+## 🔒 Privacy & Security
+
+- **No API Keys Required** - All scripts are generated locally
+- **No Data Collection** - Your prompts and sessions stay in your browser
+- **Offline Capable** - Works without internet connection after initial load
+- **Local Storage** - Sessions are stored in your browser's localStorage
 
 ## ⚠️ Disclaimer
 
-This tool is for **educational purposes only**. The generated scripts are intended to demonstrate scripting techniques and should be used responsibly. 
+This tool is for **educational purposes only**. The generated scripts are intended to demonstrate scripting techniques and should be used responsibly.
 
 - Do not use scripts to cheat in competitive games
 - Do not use scripts to harass other players
-- Do not use scripts to violate Roblox Terms of Service
+- Do not use scripts to violate game Terms of Service
 - Use at your own risk
 
 The developers are not responsible for any misuse of this tool or any consequences resulting from its use.
-
-## 📄 License
-
-MIT License - feel free to modify and distribute.
 
 ## 🤝 Contributing
 
 Contributions are welcome! Feel free to:
 - Report bugs
 - Suggest new features
+- Add new script templates
 - Improve the UI/UX
-- Add new script categories
+- Add support for more platforms
+
+## 📄 License
+
+MIT License - feel free to modify and distribute.
+
+## 🎯 Roadmap
+
+- [ ] Add more script templates for each platform
+- [ ] Support for more games (Valorant, Apex Legends, etc.)
+- [ ] Script preview and testing
+- [ ] Export scripts as files
+- [ ] Script sharing and community templates
+- [ ] Advanced customization options
 
 ---
 
-**Made with 💜 for the Roblox scripting community**
+**Made with 💜 for the gaming community**
+
+**Platforms:** Roblox | Minecraft | Counter-Strike 2
