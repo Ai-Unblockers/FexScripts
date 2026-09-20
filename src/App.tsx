@@ -3,9 +3,11 @@ import { Message, Attachment, ChatConfig, ChatSession } from './types';
 import {
   readImage,
   readVideo,
-  DEFAULT_SYSTEM,
+  EXECUTOR_SYSTEM,
   STORAGE_KEY,
   CONFIG_KEY,
+  SCRIPT_CATEGORIES,
+  QUICK_PROMPTS,
 } from './utils';
 
 // ============ SIDEBAR ============
@@ -14,67 +16,99 @@ function Sidebar({
   activeId,
   onSelect,
   onNew,
+  activeCategory,
+  onCategoryChange,
 }: {
   sessions: ChatSession[];
   activeId: string;
   onSelect: (id: string) => void;
   onNew: () => void;
+  activeCategory: string;
+  onCategoryChange: (id: string) => void;
 }) {
   return (
-    <aside className="w-[280px] bg-[#111111] border-r border-[rgba(255,255,255,0.06)] flex flex-col max-md:hidden">
-      {/* Logo area */}
+    <aside className="w-[280px] bg-[#0f0f12] border-r border-[rgba(255,255,255,0.06)] flex flex-col max-lg:hidden">
+      {/* Logo */}
       <div className="p-4 pb-2">
         <div className="flex items-center gap-2.5 px-2 mb-4">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-emerald-500/20">
-            ◧
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-purple-500 to-fuchsia-600 flex items-center justify-center shadow-lg shadow-purple-500/20 pulse-glow">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
+              <polyline points="16 18 22 12 16 6" />
+              <polyline points="8 6 2 12 8 18" />
+            </svg>
           </div>
           <div>
-            <div className="text-[14px] font-semibold text-white">LuaForge</div>
-            <div className="text-[10px] text-[#666] tracking-wide">ROBLOX LUAU AI</div>
+            <div className="text-[15px] font-bold gradient-text">LuaForge</div>
+            <div className="text-[10px] text-[#52525b] tracking-wider font-medium">EXECUTOR SCRIPTS</div>
           </div>
         </div>
         <button
           onClick={onNew}
-          className="w-full px-4 py-2.5 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 rounded-xl flex items-center justify-center gap-2 text-[13px] font-medium text-white shadow-lg shadow-emerald-500/10 hover:shadow-emerald-500/20 transition-all duration-200"
+          className="w-full px-4 py-2.5 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 rounded-xl flex items-center justify-center gap-2 text-[13px] font-semibold text-white shadow-lg shadow-purple-500/15 transition-all duration-200"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
-          New Chat
+          New Script
         </button>
       </div>
 
-      {/* Sessions list */}
-      <div className="px-3 pt-2 pb-1">
-        <div className="text-[11px] font-medium uppercase tracking-wider text-[#666] px-2">
-          Recent Chats
+      {/* Categories */}
+      <div className="px-3 pt-3 pb-1">
+        <div className="text-[11px] font-semibold uppercase tracking-wider text-[#52525b] px-2 mb-2">
+          Script Categories
+        </div>
+        <div className="space-y-0.5">
+          {SCRIPT_CATEGORIES.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => onCategoryChange(cat.id)}
+              className={`w-full px-3 py-2 rounded-lg flex items-center gap-2.5 text-left transition-all duration-150 ${
+                activeCategory === cat.id
+                  ? 'bg-purple-500/10 text-purple-300 border border-purple-500/20'
+                  : 'text-[#a1a1aa] hover:bg-[rgba(255,255,255,0.03)] hover:text-white border border-transparent'
+              }`}
+            >
+              <span className="text-[14px]">{cat.icon}</span>
+              <span className="text-[12px] font-medium">{cat.name}</span>
+            </button>
+          ))}
         </div>
       </div>
-      <div className="flex-1 overflow-auto px-2">
-        {sessions.map((s) => (
-          <div
-            key={s.id}
-            onClick={() => onSelect(s.id)}
-            className={`group px-3 py-2.5 rounded-xl cursor-pointer mb-0.5 flex items-center gap-2.5 transition-all duration-200 ${
-              s.id === activeId
-                ? 'bg-[rgba(255,255,255,0.06)] text-white'
-                : 'text-[#a1a1a1] hover:bg-[rgba(255,255,255,0.04)] hover:text-white'
-            }`}
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="opacity-50 flex-shrink-0">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-            </svg>
-            <span className="text-[13px] truncate">{s.title}</span>
-          </div>
-        ))}
+
+      {/* Recent sessions */}
+      <div className="px-3 pt-4 pb-1 flex-1 overflow-auto">
+        <div className="text-[11px] font-semibold uppercase tracking-wider text-[#52525b] px-2 mb-2">
+          Recent Scripts
+        </div>
+        <div className="space-y-0.5">
+          {sessions.slice(0, 10).map((s) => (
+            <div
+              key={s.id}
+              onClick={() => onSelect(s.id)}
+              className={`group px-3 py-2 rounded-lg cursor-pointer flex items-center gap-2 transition-all duration-150 ${
+                s.id === activeId
+                  ? 'bg-[rgba(255,255,255,0.05)] text-white'
+                  : 'text-[#71717a] hover:bg-[rgba(255,255,255,0.03)] hover:text-[#a1a1aa]'
+              }`}
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="opacity-40 flex-shrink-0">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+              </svg>
+              <span className="text-[12px] truncate">{s.title}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Footer */}
       <div className="border-t border-[rgba(255,255,255,0.06)] px-4 py-3">
-        <div className="flex items-center gap-2 text-[11px] text-[#666]">
-          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span>Ready to code</span>
+        <div className="flex items-center gap-2 text-[11px] text-[#52525b]">
+          <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
+          <span>Ready to generate</span>
+          <span className="ml-auto text-[10px]">v2.0</span>
         </div>
       </div>
     </aside>
@@ -103,68 +137,57 @@ function SettingsModal({
 
   return (
     <div
-      className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in"
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in"
       onClick={onClose}
     >
       <div
-        className="bg-[#151515] border border-[rgba(255,255,255,0.08)] rounded-2xl max-w-[500px] w-full p-6 shadow-2xl animate-slide-up"
+        className="bg-[#131316] border border-[rgba(255,255,255,0.08)] rounded-2xl max-w-[500px] w-full p-6 shadow-2xl animate-slide-up"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center gap-3 mb-1">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-700/20 flex items-center justify-center">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500/20 to-fuchsia-500/20 border border-purple-500/20 flex items-center justify-center">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a855f7" strokeWidth="2" strokeLinecap="round">
               <circle cx="12" cy="12" r="3" />
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
             </svg>
           </div>
           <div>
-            <h2 className="text-[16px] font-semibold text-white">API Settings</h2>
-            <p className="text-[12px] text-[#666]">Configure your connection</p>
+            <h2 className="text-[16px] font-bold text-white">Executor Settings</h2>
+            <p className="text-[12px] text-[#71717a]">Configure API & generation</p>
           </div>
         </div>
 
-        <div className="mt-5 space-y-4">
+        <div className="space-y-4">
           <div>
-            <label className="block text-[12px] font-medium text-[#a1a1a1] mb-1.5">
-              API Endpoint
-            </label>
+            <label className="block text-[12px] font-medium text-[#a1a1aa] mb-1.5">API Endpoint</label>
             <input
-              className="w-full bg-[#0a0a0a] border border-[rgba(255,255,255,0.08)] rounded-xl px-3.5 py-2.5 text-[13px] text-white outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/20 transition-all"
+              className="w-full bg-[#09090b] border border-[rgba(255,255,255,0.08)] rounded-xl px-3.5 py-2.5 text-[13px] text-white outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/20 transition-all"
               value={local.url}
               onChange={(e) => setLocal({ ...local, url: e.target.value })}
             />
           </div>
-
           <div>
-            <label className="block text-[12px] font-medium text-[#a1a1a1] mb-1.5">
-              API Key
-            </label>
+            <label className="block text-[12px] font-medium text-[#a1a1aa] mb-1.5">API Key</label>
             <input
               type="password"
-              className="w-full bg-[#0a0a0a] border border-[rgba(255,255,255,0.08)] rounded-xl px-3.5 py-2.5 text-[13px] text-white outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/20 transition-all"
+              className="w-full bg-[#09090b] border border-[rgba(255,255,255,0.08)] rounded-xl px-3.5 py-2.5 text-[13px] text-white outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/20 transition-all"
               value={local.key}
               onChange={(e) => setLocal({ ...local, key: e.target.value })}
               placeholder="sk-or-..."
             />
           </div>
-
           <div>
-            <label className="block text-[12px] font-medium text-[#a1a1a1] mb-1.5">
-              Model
-            </label>
+            <label className="block text-[12px] font-medium text-[#a1a1aa] mb-1.5">Model</label>
             <input
-              className="w-full bg-[#0a0a0a] border border-[rgba(255,255,255,0.08)] rounded-xl px-3.5 py-2.5 text-[13px] text-white outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/20 transition-all"
+              className="w-full bg-[#09090b] border border-[rgba(255,255,255,0.08)] rounded-xl px-3.5 py-2.5 text-[13px] text-white outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/20 transition-all"
               value={local.model}
               onChange={(e) => setLocal({ ...local, model: e.target.value })}
             />
           </div>
-
           <div>
-            <label className="block text-[12px] font-medium text-[#a1a1a1] mb-1.5">
-              System Prompt
-            </label>
+            <label className="block text-[12px] font-medium text-[#a1a1aa] mb-1.5">System Prompt</label>
             <textarea
-              className="w-full bg-[#0a0a0a] border border-[rgba(255,255,255,0.08)] rounded-xl px-3.5 py-2.5 text-[13px] text-white outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/20 transition-all min-h-[80px] resize-y"
+              className="w-full bg-[#09090b] border border-[rgba(255,255,255,0.08)] rounded-xl px-3.5 py-2.5 text-[13px] text-white outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/20 transition-all min-h-[80px] resize-y"
               value={local.system}
               onChange={(e) => setLocal({ ...local, system: e.target.value })}
             />
@@ -174,16 +197,13 @@ function SettingsModal({
         <div className="flex gap-3 justify-end mt-6">
           <button
             onClick={onClose}
-            className="px-4 py-2.5 rounded-xl text-[13px] font-medium text-[#a1a1a1] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-all"
+            className="px-4 py-2.5 rounded-xl text-[13px] font-medium text-[#a1a1aa] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-all"
           >
             Cancel
           </button>
           <button
-            onClick={() => {
-              onSave(local);
-              onClose();
-            }}
-            className="bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white px-5 py-2.5 rounded-xl text-[13px] font-medium shadow-lg shadow-emerald-500/10 transition-all"
+            onClick={() => { onSave(local); onClose(); }}
+            className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 text-white px-5 py-2.5 rounded-xl text-[13px] font-semibold shadow-lg shadow-purple-500/15 transition-all"
           >
             Save Changes
           </button>
@@ -204,85 +224,43 @@ function CodeBlock({ code, lang }: { code: string; lang: string }) {
   };
 
   return (
-    <div className="relative group mb-3 rounded-xl overflow-hidden border border-[rgba(255,255,255,0.06)]">
-      <div className="flex items-center justify-between px-4 py-2 bg-[rgba(255,255,255,0.03)] border-b border-[rgba(255,255,255,0.06)]">
-        <span className="text-[11px] font-medium uppercase tracking-wider text-[#666]">{lang}</span>
+    <div className="relative group mb-4 rounded-xl overflow-hidden border border-[rgba(255,255,255,0.06)] bg-[#0a0a0c]">
+      <div className="flex items-center justify-between px-4 py-2.5 bg-[rgba(255,255,255,0.02)] border-b border-[rgba(255,255,255,0.06)]">
+        <div className="flex items-center gap-2">
+          <div className="flex gap-1.5">
+            <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
+            <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
+            <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
+          </div>
+          <span className="text-[11px] font-mono font-medium text-[#71717a] ml-2">{lang}</span>
+          <span className="text-[10px] text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded-full border border-purple-500/20">
+            Executor Script
+          </span>
+        </div>
         <button
           onClick={handleCopy}
-          className="text-[11px] text-[#666] hover:text-emerald-400 flex items-center gap-1 transition-colors"
+          className={`text-[11px] font-medium flex items-center gap-1.5 px-2.5 py-1 rounded-lg transition-all ${
+            copied
+              ? 'text-emerald-400 bg-emerald-500/10'
+              : 'text-[#71717a] hover:text-purple-400 hover:bg-purple-500/10'
+          }`}
         >
           {copied ? (
             <>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12" /></svg>
-              Copied
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>
+              Copied!
             </>
           ) : (
             <>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg>
-              Copy
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg>
+              Copy Script
             </>
           )}
         </button>
       </div>
-      <pre className="bg-[#0d0d0d] p-4 overflow-auto text-[13px] leading-relaxed m-0">
+      <pre className="p-4 overflow-auto text-[13px] leading-relaxed m-0 max-h-[500px]">
         <code className="text-[#e5e5e5]">{code}</code>
       </pre>
-    </div>
-  );
-}
-
-// ============ MESSAGE BUBBLE ============
-function MessageBubble({ message, isStreaming }: { message: Message; isStreaming?: boolean }) {
-  if (message.role === 'user') {
-    return (
-      <div className="flex justify-end animate-fade-in">
-        <div className="max-w-[85%]">
-          {message.attachments && message.attachments.length > 0 && (
-            <div className="flex flex-wrap gap-2 justify-end mb-2">
-              {message.attachments.map((a, i) => (
-                <div key={i} className="relative rounded-xl overflow-hidden border border-[rgba(255,255,255,0.08)]">
-                  <img
-                    src={a.dataUrl}
-                    alt={a.name}
-                    className="max-h-[180px] object-cover"
-                  />
-                  {a.kind === 'video' && (
-                    <div className="absolute bottom-1.5 left-1.5 text-[10px] text-white bg-black/60 px-1.5 py-0.5 rounded-md backdrop-blur-sm">
-                      🎬 {a.durationSec}s
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-          {message.text && (
-            <div className="bg-gradient-to-br from-emerald-600 to-emerald-700 text-white px-4 py-3 rounded-2xl rounded-tr-md text-[14px] leading-relaxed whitespace-pre-wrap shadow-lg shadow-emerald-500/5">
-              {message.text}
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex gap-3 animate-fade-in">
-      <div className="w-8 h-8 flex-shrink-0 rounded-xl bg-gradient-to-br from-emerald-500/15 to-emerald-700/15 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm">
-        ◧
-      </div>
-      <div className="flex-1 min-w-0 text-[14px] leading-relaxed pt-0.5">
-        {isStreaming && !message.text ? (
-          <div className="flex gap-1.5 pt-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 thinking-dot" />
-            <span className="w-2 h-2 rounded-full bg-emerald-400 thinking-dot" />
-            <span className="w-2 h-2 rounded-full bg-emerald-400 thinking-dot" />
-          </div>
-        ) : (
-          <div className="prose-custom">
-            <AIMessage text={message.text || ''} />
-          </div>
-        )}
-      </div>
     </div>
   );
 }
@@ -301,7 +279,7 @@ function AIMessage({ text }: { text: string }) {
         }
         if (!part) return null;
         return (
-          <div key={i} className="mb-3 text-[14px] leading-[1.7]">
+          <div key={i} className="mb-3 text-[14px] leading-[1.75]">
             {part.split('\n').map((line, j) => (
               <span key={j}>
                 {line}
@@ -315,44 +293,123 @@ function AIMessage({ text }: { text: string }) {
   );
 }
 
-// ============ EMPTY STATE ============
-function EmptyState({ onSuggestion }: { onSuggestion: (s: string) => void }) {
-  const suggestions = [
-    { icon: '🎮', text: 'Make a teleport script for a lobby' },
-    { icon: '📊', text: 'Write a leaderstats module with saving' },
-    { icon: '💰', text: 'Add a currency multiplier to a Roblox game' },
-    { icon: '⚔️', text: 'Build a sword combat system' },
-  ];
+// ============ MESSAGE BUBBLE ============
+function MessageBubble({ message, isStreaming }: { message: Message; isStreaming?: boolean }) {
+  if (message.role === 'user') {
+    return (
+      <div className="flex justify-end animate-fade-in">
+        <div className="max-w-[85%]">
+          {message.attachments && message.attachments.length > 0 && (
+            <div className="flex flex-wrap gap-2 justify-end mb-2">
+              {message.attachments.map((a, i) => (
+                <div key={i} className="relative rounded-xl overflow-hidden border border-[rgba(255,255,255,0.08)]">
+                  <img src={a.dataUrl} alt={a.name} className="max-h-[160px] object-cover" />
+                </div>
+              ))}
+            </div>
+          )}
+          {message.text && (
+            <div className="bg-gradient-to-br from-purple-600 to-fuchsia-700 text-white px-4 py-3 rounded-2xl rounded-tr-sm text-[14px] leading-relaxed whitespace-pre-wrap shadow-lg shadow-purple-500/10">
+              {message.text}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex flex-col items-center text-center py-16 animate-slide-up">
-      {/* Hero icon */}
+    <div className="flex gap-3 animate-fade-in">
+      <div className="w-8 h-8 flex-shrink-0 rounded-xl bg-gradient-to-br from-purple-500/15 to-fuchsia-500/15 border border-purple-500/20 flex items-center justify-center">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a855f7" strokeWidth="2.5" strokeLinecap="round">
+          <polyline points="16 18 22 12 16 6" />
+          <polyline points="8 6 2 12 8 18" />
+        </svg>
+      </div>
+      <div className="flex-1 min-w-0 text-[14px] leading-relaxed pt-0.5">
+        {isStreaming && !message.text ? (
+          <div className="flex gap-1.5 pt-2">
+            <span className="w-2 h-2 rounded-full bg-purple-400 thinking-dot" />
+            <span className="w-2 h-2 rounded-full bg-purple-400 thinking-dot" />
+            <span className="w-2 h-2 rounded-full bg-purple-400 thinking-dot" />
+          </div>
+        ) : (
+          <AIMessage text={message.text || ''} />
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ============ EMPTY STATE ============
+function EmptyState({
+  activeCategory,
+  onSuggestion,
+}: {
+  activeCategory: string;
+  onSuggestion: (s: string) => void;
+}) {
+  const category = SCRIPT_CATEGORIES.find((c) => c.id === activeCategory) || SCRIPT_CATEGORIES[0];
+  const prompts = QUICK_PROMPTS[activeCategory] || QUICK_PROMPTS.esp;
+
+  return (
+    <div className="flex flex-col items-center text-center py-12 animate-slide-up">
+      {/* Hero */}
       <div className="relative mb-6">
-        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center text-white text-3xl font-bold shadow-2xl shadow-emerald-500/20">
-          ◧
+        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-600 to-fuchsia-700 flex items-center justify-center shadow-2xl shadow-purple-500/20 pulse-glow">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round">
+            <polyline points="16 18 22 12 16 6" />
+            <polyline points="8 6 2 12 8 18" />
+          </svg>
         </div>
-        <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[#151515] border-2 border-emerald-500 flex items-center justify-center text-[10px]">
-          ✨
+        <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-[#131316] border-2 border-purple-500 flex items-center justify-center text-[12px]">
+          {category.icon}
         </div>
       </div>
 
-      <h1 className="text-[24px] font-bold text-white mb-2">
-        What Luau script are we building?
+      <h1 className="text-[26px] font-bold text-white mb-2">
+        Generate <span className="gradient-text">Executor Scripts</span>
       </h1>
-      <p className="text-[#a1a1a1] text-[15px] max-w-[440px] leading-relaxed">
-        Ask anything about Roblox development, paste a game link, or drop in a screenshot or clip.
+      <p className="text-[#a1a1aa] text-[15px] max-w-[460px] leading-relaxed mb-2">
+        Complete, working Lua scripts for Synapse X, Script-Ware, KRNL, Fluxus & more.
       </p>
+      <div className="flex items-center gap-2 mb-8">
+        <span className="text-[11px] text-[#52525b] bg-[rgba(255,255,255,0.03)] px-2.5 py-1 rounded-full border border-[rgba(255,255,255,0.06)]">
+          {category.icon} {category.name}
+        </span>
+        <span className="text-[11px] text-[#52525b]">•</span>
+        <span className="text-[11px] text-[#52525b]">{category.desc}</span>
+      </div>
 
-      <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-[540px]">
-        {suggestions.map((s) => (
+      {/* Quick prompts */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full max-w-[560px]">
+        {prompts.map((p) => (
           <button
-            key={s.text}
-            onClick={() => onSuggestion(s.text)}
-            className="group border border-[rgba(255,255,255,0.06)] bg-[rgba(255,255,255,0.02)] hover:bg-[rgba(255,255,255,0.05)] hover:border-[rgba(255,255,255,0.1)] rounded-xl p-4 text-left transition-all duration-200"
+            key={p}
+            onClick={() => onSuggestion(p)}
+            className="group border border-[rgba(255,255,255,0.06)] bg-[rgba(255,255,255,0.02)] hover:bg-purple-500/5 hover:border-purple-500/20 rounded-xl p-3.5 text-left transition-all duration-200"
           >
-            <span className="text-lg mb-1.5 block">{s.icon}</span>
-            <span className="text-[13px] text-[#a1a1a1] group-hover:text-white transition-colors">{s.text}</span>
+            <div className="flex items-start gap-2.5">
+              <div className="w-6 h-6 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#a855f7" strokeWidth="3" strokeLinecap="round">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </div>
+              <span className="text-[13px] text-[#a1a1aa] group-hover:text-white transition-colors leading-snug">
+                {p}
+              </span>
+            </div>
           </button>
+        ))}
+      </div>
+
+      {/* Supported executors */}
+      <div className="mt-8 flex flex-wrap items-center justify-center gap-2">
+        <span className="text-[10px] text-[#52525b] uppercase tracking-wider mr-1">Works with:</span>
+        {['Synapse X', 'Script-Ware', 'KRNL', 'Fluxus', 'Hydrogen', 'Delta'].map((e) => (
+          <span key={e} className="text-[10px] text-[#71717a] bg-[rgba(255,255,255,0.03)] px-2 py-0.5 rounded-full border border-[rgba(255,255,255,0.06)]">
+            {e}
+          </span>
         ))}
       </div>
     </div>
@@ -370,6 +427,7 @@ export default function App() {
     }
   });
   const [activeId, setActiveId] = useState<string>('');
+  const [activeCategory, setActiveCategory] = useState('esp');
   const [config, setConfig] = useState<ChatConfig>(() => {
     try {
       const stored = localStorage.getItem(CONFIG_KEY);
@@ -379,14 +437,14 @@ export default function App() {
             url: 'https://openrouter.ai/api/v1',
             key: '',
             model: 'openai/gpt-4o-mini',
-            system: DEFAULT_SYSTEM,
+            system: EXECUTOR_SYSTEM,
           };
     } catch {
       return {
         url: 'https://openrouter.ai/api/v1',
         key: '',
         model: 'openai/gpt-4o-mini',
-        system: DEFAULT_SYSTEM,
+        system: EXECUTOR_SYSTEM,
       };
     }
   });
@@ -396,6 +454,7 @@ export default function App() {
   const [error, setError] = useState('');
   const [dragOver, setDragOver] = useState(false);
   const [inputValue, setInputValue] = useState('');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const abortRef = useRef<AbortController | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -431,9 +490,10 @@ export default function App() {
 
   const createNewSession = useCallback(() => {
     const id = Date.now().toString(36) + Math.random().toString(36).slice(2);
+    const cat = SCRIPT_CATEGORIES.find((c) => c.id === activeCategory);
     const newSession: ChatSession = {
       id,
-      title: 'New chat',
+      title: `${cat?.icon || '📜'} New ${cat?.name || 'Script'}`,
       messages: [],
       createdAt: Date.now(),
     };
@@ -441,7 +501,8 @@ export default function App() {
     setActiveId(id);
     setAttachments([]);
     setError('');
-  }, []);
+    setMobileMenuOpen(false);
+  }, [activeCategory]);
 
   useEffect(() => {
     if (sessions.length === 0) {
@@ -455,7 +516,6 @@ export default function App() {
     setError('');
     const arr = Array.from(files);
     const newAttachments: Attachment[] = [];
-
     for (const f of arr) {
       try {
         const item = f.type.startsWith('video/')
@@ -469,7 +529,6 @@ export default function App() {
         setError(e.message);
       }
     }
-
     setAttachments((prev) => [...prev, ...newAttachments].slice(-6));
   };
 
@@ -478,22 +537,25 @@ export default function App() {
     if ((!text && attachments.length === 0) || streaming) return;
     if (!config.key) {
       setError('No API key configured. Open settings to add your key.');
+      setSettingsOpen(true);
       return;
     }
     setError('');
 
+    const category = SCRIPT_CATEGORIES.find((c) => c.id === activeCategory);
+    const contextPrefix = `[Category: ${category?.name || 'General'}] `;
     const userMsg: Message = {
       role: 'user',
-      text,
+      text: contextPrefix + text,
       attachments: [...attachments],
     };
 
     const newMessages = [...messages, userMsg];
 
     if (messages.length === 0) {
-      const title = text.slice(0, 40) || 'Image analysis';
+      const title = text.length > 35 ? text.slice(0, 35) + '...' : text;
       setSessions((prev) =>
-        prev.map((s) => (s.id === activeId ? { ...s, title, messages: newMessages } : s))
+        prev.map((s) => (s.id === activeId ? { ...s, title: `${category?.icon || '📜'} ${title}`, messages: newMessages } : s))
       );
     } else {
       updateMessages(newMessages);
@@ -509,12 +571,6 @@ export default function App() {
         const content: any[] = [];
         for (const a of m.attachments || []) {
           content.push({ type: 'image_url', image_url: { url: a.dataUrl } });
-          if (a.kind === 'video') {
-            content.push({
-              type: 'text',
-              text: `[Video preview frame from ${a.name} (${a.durationSec}s)]`,
-            });
-          }
         }
         if (m.text) content.push({ type: 'text', text: m.text });
         apiMessages.push({
@@ -588,9 +644,7 @@ export default function App() {
     }
   };
 
-  const stopStreaming = () => {
-    abortRef.current?.abort();
-  };
+  const stopStreaming = () => { abortRef.current?.abort(); };
 
   const handleDragEnter = (e: React.DragEvent) => {
     if (!Array.from(e.dataTransfer.types).includes('Files')) return;
@@ -598,19 +652,16 @@ export default function App() {
     dragDepthRef.current++;
     setDragOver(true);
   };
-
   const handleDragOver = (e: React.DragEvent) => {
     if (!Array.from(e.dataTransfer.types).includes('Files')) return;
     e.preventDefault();
     e.dataTransfer.dropEffect = 'copy';
   };
-
   const handleDragLeave = (e: React.DragEvent) => {
     e.preventDefault();
     dragDepthRef.current = Math.max(0, dragDepthRef.current - 1);
     if (dragDepthRef.current === 0) setDragOver(false);
   };
-
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     dragDepthRef.current = 0;
@@ -632,17 +683,17 @@ export default function App() {
     }
   };
 
+  const currentCategory = SCRIPT_CATEGORIES.find((c) => c.id === activeCategory);
+
   return (
-    <div className="flex h-screen bg-[#0a0a0a] text-[#fafafa]">
+    <div className="flex h-screen bg-[#09090b] text-[#fafafa]">
       <Sidebar
         sessions={sessions}
         activeId={activeId}
-        onSelect={(id) => {
-          setActiveId(id);
-          setAttachments([]);
-          setError('');
-        }}
+        onSelect={(id) => { setActiveId(id); setAttachments([]); setError(''); setMobileMenuOpen(false); }}
         onNew={createNewSession}
+        activeCategory={activeCategory}
+        onCategoryChange={setActiveCategory}
       />
 
       <main
@@ -655,44 +706,88 @@ export default function App() {
         {/* Drop overlay */}
         {dragOver && (
           <div className="absolute inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 animate-fade-in">
-            <div className="border-2 border-dashed border-emerald-500 bg-emerald-500/5 rounded-2xl p-8 text-center glow">
-              <div className="text-4xl mb-3">🖼️</div>
+            <div className="border-2 border-dashed border-purple-500 bg-purple-500/5 rounded-2xl p-8 text-center glow-purple">
+              <div className="text-4xl mb-3">📎</div>
               <p className="text-[16px] font-semibold text-white">Drop files to attach</p>
-              <p className="mt-1 text-[13px] text-[#a1a1a1]">
-                Up to 20 MB each · max 6 files
-              </p>
+              <p className="mt-1 text-[13px] text-[#a1a1aa]">Up to 20 MB each · max 6 files</p>
             </div>
           </div>
         )}
 
         {/* Header */}
-        <header className="h-14 border-b border-[rgba(255,255,255,0.06)] flex items-center gap-3 px-5 glass">
+        <header className="h-14 border-b border-[rgba(255,255,255,0.06)] flex items-center gap-3 px-4 glass">
+          {/* Mobile menu button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="lg:hidden w-8 h-8 rounded-lg flex items-center justify-center text-[#71717a] hover:text-white hover:bg-[rgba(255,255,255,0.05)]"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center text-white text-xs font-bold shadow-md shadow-emerald-500/15">
-              ◧
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-purple-500 to-fuchsia-600 flex items-center justify-center shadow-md shadow-purple-500/15">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
+                <polyline points="16 18 22 12 16 6" />
+                <polyline points="8 6 2 12 8 18" />
+              </svg>
             </div>
             <div className="flex items-baseline gap-2">
-              <span className="font-semibold text-[15px]">LuaForge</span>
-              <span className="text-[11px] text-[#666] font-medium hidden sm:inline">Roblox Luau AI</span>
+              <span className="font-bold text-[15px] gradient-text">LuaForge</span>
+              <span className="text-[10px] text-[#52525b] font-medium hidden sm:inline tracking-wider">EXECUTOR SCRIPTS</span>
             </div>
           </div>
+
+          {/* Category selector (mobile) */}
+          <div className="lg:hidden ml-auto">
+            <select
+              value={activeCategory}
+              onChange={(e) => setActiveCategory(e.target.value)}
+              className="bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.08)] rounded-lg px-2 py-1.5 text-[11px] text-[#a1a1aa] outline-none"
+            >
+              {SCRIPT_CATEGORIES.map((c) => (
+                <option key={c.id} value={c.id}>{c.icon} {c.name}</option>
+              ))}
+            </select>
+          </div>
+
           <button
             onClick={() => setSettingsOpen(true)}
-            className="ml-auto px-3 py-2 rounded-xl text-[12px] font-medium text-[#a1a1a1] hover:text-white hover:bg-[rgba(255,255,255,0.05)] flex items-center gap-2 transition-all"
+            className="ml-auto lg:ml-0 px-3 py-2 rounded-xl text-[12px] font-medium text-[#71717a] hover:text-white hover:bg-[rgba(255,255,255,0.05)] flex items-center gap-2 transition-all"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               <circle cx="12" cy="12" r="3" />
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
             </svg>
-            Settings
+            <span className="hidden sm:inline">Settings</span>
           </button>
         </header>
 
+        {/* Mobile sidebar overlay */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)}>
+            <div className="w-[280px] h-full" onClick={(e) => e.stopPropagation()}>
+              <Sidebar
+                sessions={sessions}
+                activeId={activeId}
+                onSelect={(id) => { setActiveId(id); setAttachments([]); setError(''); setMobileMenuOpen(false); }}
+                onNew={createNewSession}
+                activeCategory={activeCategory}
+                onCategoryChange={(c) => { setActiveCategory(c); }}
+              />
+            </div>
+          </div>
+        )}
+
         {/* Messages area */}
         <div className="flex-1 overflow-auto" ref={scrollRef}>
-          <div className="max-w-[800px] mx-auto px-5 py-6">
+          <div className="max-w-[820px] mx-auto px-4 sm:px-6 py-6">
             {messages.length === 0 ? (
               <EmptyState
+                activeCategory={activeCategory}
                 onSuggestion={(s) => {
                   setInputValue(s);
                   textareaRef.current?.focus();
@@ -715,25 +810,25 @@ export default function App() {
         {/* Composer */}
         <div className="border-t border-[rgba(255,255,255,0.06)] p-4 pb-5">
           <form
-            className="max-w-[800px] mx-auto"
-            onSubmit={(e) => {
-              e.preventDefault();
-              send();
-            }}
+            className="max-w-[820px] mx-auto"
+            onSubmit={(e) => { e.preventDefault(); send(); }}
           >
+            {/* Category tag */}
+            <div className="flex items-center gap-2 mb-3">
+              <div className="flex items-center gap-1.5 text-[11px] text-[#71717a] bg-[rgba(255,255,255,0.03)] px-2.5 py-1 rounded-full border border-[rgba(255,255,255,0.06)]">
+                <span>{currentCategory?.icon}</span>
+                <span className="font-medium">{currentCategory?.name}</span>
+              </div>
+              <span className="text-[10px] text-[#52525b]">•</span>
+              <span className="text-[10px] text-[#52525b]">Executor-ready output</span>
+            </div>
+
             {/* Attachments */}
             {attachments.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-3 animate-fade-in">
                 {attachments.map((a, i) => (
-                  <div
-                    key={i}
-                    className="relative rounded-xl overflow-hidden border border-[rgba(255,255,255,0.08)] group"
-                  >
-                    <img
-                      src={a.dataUrl}
-                      alt={a.name}
-                      className="w-24 h-16 object-cover block"
-                    />
+                  <div key={i} className="relative rounded-xl overflow-hidden border border-[rgba(255,255,255,0.08)] group">
+                    <img src={a.dataUrl} alt={a.name} className="w-24 h-16 object-cover block" />
                     {a.kind === 'video' && (
                       <div className="absolute bottom-1 left-1 text-[10px] text-white bg-black/60 px-1.5 py-0.5 rounded-md backdrop-blur-sm">
                         🎬 {a.durationSec}s
@@ -741,9 +836,7 @@ export default function App() {
                     )}
                     <button
                       type="button"
-                      onClick={() =>
-                        setAttachments((prev) => prev.filter((_, idx) => idx !== i))
-                      }
+                      onClick={() => setAttachments((prev) => prev.filter((_, idx) => idx !== i))}
                       className="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/70 text-white flex items-center justify-center text-[10px] hover:bg-red-500 transition-colors opacity-0 group-hover:opacity-100"
                     >
                       ✕
@@ -762,90 +855,51 @@ export default function App() {
             )}
 
             {/* Input box */}
-            <div className="bg-[#151515] border border-[rgba(255,255,255,0.08)] rounded-2xl overflow-hidden shadow-2xl shadow-black/30 focus-within:border-[rgba(16,185,129,0.3)] focus-within:shadow-emerald-500/5 transition-all duration-200">
+            <div className="bg-[#131316] border border-[rgba(255,255,255,0.08)] rounded-2xl overflow-hidden shadow-2xl shadow-black/40 focus-within:border-purple-500/30 focus-within:shadow-purple-500/5 transition-all duration-200">
               <textarea
                 ref={textareaRef}
                 value={inputValue}
                 onChange={handleInput}
                 onKeyDown={handleKeyDown}
-                placeholder="Message LuaForge…"
+                placeholder={`Describe the ${currentCategory?.name?.toLowerCase() || 'script'} you want...`}
                 rows={1}
-                className="w-full bg-transparent border-0 outline-none resize-none px-4 pt-3.5 pb-2 text-[14px] text-white placeholder-[#666] min-h-[48px]"
+                className="w-full bg-transparent border-0 outline-none resize-none px-4 pt-3.5 pb-2 text-[14px] text-white placeholder-[#52525b] min-h-[48px]"
               />
-              <input
-                ref={imgInputRef}
-                type="file"
-                accept="image/*"
-                multiple
-                hidden
-                onChange={(e) => {
-                  if (e.target.files) addFiles(e.target.files);
-                  e.target.value = '';
-                }}
-              />
-              <input
-                ref={vidInputRef}
-                type="file"
-                accept="video/*"
-                multiple
-                hidden
-                onChange={(e) => {
-                  if (e.target.files) addFiles(e.target.files);
-                  e.target.value = '';
-                }}
-              />
+              <input ref={imgInputRef} type="file" accept="image/*" multiple hidden onChange={(e) => { if (e.target.files) addFiles(e.target.files); e.target.value = ''; }} />
+              <input ref={vidInputRef} type="file" accept="video/*" multiple hidden onChange={(e) => { if (e.target.files) addFiles(e.target.files); e.target.value = ''; }} />
               <div className="flex items-center gap-1 px-2 pb-2">
-                <button
-                  type="button"
-                  onClick={() => imgInputRef.current?.click()}
-                  title="Attach image"
-                  className="w-8 h-8 rounded-lg text-[#666] hover:text-emerald-400 hover:bg-[rgba(255,255,255,0.05)] inline-flex items-center justify-center transition-all"
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg>
+                <button type="button" onClick={() => imgInputRef.current?.click()} title="Attach image" className="w-8 h-8 rounded-lg text-[#52525b] hover:text-purple-400 hover:bg-purple-500/10 inline-flex items-center justify-center transition-all">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg>
                 </button>
-                <button
-                  type="button"
-                  onClick={() => vidInputRef.current?.click()}
-                  title="Attach video"
-                  className="w-8 h-8 rounded-lg text-[#666] hover:text-emerald-400 hover:bg-[rgba(255,255,255,0.05)] inline-flex items-center justify-center transition-all"
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><polygon points="23 7 16 12 23 17 23 7" /><rect x="1" y="5" width="15" height="14" rx="2" ry="2" /></svg>
+                <button type="button" onClick={() => vidInputRef.current?.click()} title="Attach video" className="w-8 h-8 rounded-lg text-[#52525b] hover:text-purple-400 hover:bg-purple-500/10 inline-flex items-center justify-center transition-all">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><polygon points="23 7 16 12 23 17 23 7" /><rect x="1" y="5" width="15" height="14" rx="2" /></svg>
                 </button>
                 <div className="flex-1" />
                 {streaming ? (
-                  <button
-                    type="button"
-                    onClick={stopStreaming}
-                    className="bg-white text-black px-4 py-2 rounded-xl text-[13px] font-medium inline-flex items-center gap-1.5 hover:bg-gray-200 transition-all shadow-md"
-                  >
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2" /></svg>
+                  <button type="button" onClick={stopStreaming} className="bg-white text-black px-4 py-2 rounded-xl text-[13px] font-semibold inline-flex items-center gap-1.5 hover:bg-gray-200 transition-all shadow-md">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2" /></svg>
                     Stop
                   </button>
                 ) : (
                   <button
                     type="submit"
                     disabled={!inputValue.trim() && attachments.length === 0}
-                    className="bg-gradient-to-r from-emerald-600 to-emerald-500 text-white px-4 py-2 rounded-xl text-[13px] font-medium inline-flex items-center gap-1.5 disabled:opacity-30 disabled:cursor-not-allowed hover:from-emerald-500 hover:to-emerald-400 transition-all shadow-md shadow-emerald-500/10 disabled:shadow-none"
+                    className="bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white px-4 py-2 rounded-xl text-[13px] font-semibold inline-flex items-center gap-1.5 disabled:opacity-30 disabled:cursor-not-allowed hover:from-purple-500 hover:to-fuchsia-500 transition-all shadow-md shadow-purple-500/15 disabled:shadow-none"
                   >
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>
-                    Send
+                    Generate
                   </button>
                 )}
               </div>
             </div>
-            <p className="text-center text-[11px] text-[#444] mt-3">
-              LuaForge can make mistakes. Verify generated scripts before running in Studio.
+            <p className="text-center text-[10px] text-[#3f3f46] mt-3">
+              Scripts generated for educational purposes. Use responsibly.
             </p>
           </form>
         </div>
       </main>
 
-      <SettingsModal
-        open={settingsOpen}
-        onClose={() => setSettingsOpen(false)}
-        config={config}
-        onSave={setConfig}
-      />
+      <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} config={config} onSave={setConfig} />
     </div>
   );
 }
