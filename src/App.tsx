@@ -31,11 +31,12 @@ function Sidebar({
       {/* Logo */}
       <div className="p-4 pb-2">
         <div className="flex items-center gap-2.5 px-2 mb-4">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-purple-500 to-fuchsia-600 flex items-center justify-center shadow-lg shadow-purple-500/20 pulse-glow">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
-              <polyline points="16 18 22 12 16 6" />
-              <polyline points="8 6 2 12 8 18" />
-            </svg>
+          <div className="w-9 h-9 rounded-xl overflow-hidden shadow-lg shadow-purple-500/20 pulse-glow">
+            <img 
+              src="https://cdn.discordapp.com/icons/1541928149174984784/fa29c0d41945a2ad221ca0cf0c0b7409.png?size=128" 
+              alt="LuaForge Logo" 
+              className="w-full h-full object-cover"
+            />
           </div>
           <div>
             <div className="text-[15px] font-bold gradient-text">LuaForge</div>
@@ -145,11 +146,12 @@ function SettingsModal({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center gap-3 mb-5">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500/20 to-fuchsia-500/20 border border-purple-500/20 flex items-center justify-center">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a855f7" strokeWidth="2" strokeLinecap="round">
-              <circle cx="12" cy="12" r="3" />
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-            </svg>
+          <div className="w-10 h-10 rounded-xl overflow-hidden border border-purple-500/20">
+            <img 
+              src="https://cdn.discordapp.com/icons/1541928149174984784/fa29c0d41945a2ad221ca0cf0c0b7409.png?size=128" 
+              alt="LuaForge" 
+              className="w-full h-full object-cover"
+            />
           </div>
           <div>
             <h2 className="text-[16px] font-bold text-white">Executor Settings</h2>
@@ -320,11 +322,12 @@ function MessageBubble({ message, isStreaming }: { message: Message; isStreaming
 
   return (
     <div className="flex gap-3 animate-fade-in">
-      <div className="w-8 h-8 flex-shrink-0 rounded-xl bg-gradient-to-br from-purple-500/15 to-fuchsia-500/15 border border-purple-500/20 flex items-center justify-center">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a855f7" strokeWidth="2.5" strokeLinecap="round">
-          <polyline points="16 18 22 12 16 6" />
-          <polyline points="8 6 2 12 8 18" />
-        </svg>
+      <div className="w-8 h-8 flex-shrink-0 rounded-xl overflow-hidden border border-purple-500/20">
+        <img 
+          src="https://cdn.discordapp.com/icons/1541928149174984784/fa29c0d41945a2ad221ca0cf0c0b7409.png?size=128" 
+          alt="LuaForge" 
+          className="w-full h-full object-cover"
+        />
       </div>
       <div className="flex-1 min-w-0 text-[14px] leading-relaxed pt-0.5">
         {isStreaming && !message.text ? (
@@ -356,11 +359,12 @@ function EmptyState({
     <div className="flex flex-col items-center text-center py-12 animate-slide-up">
       {/* Hero */}
       <div className="relative mb-6">
-        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-600 to-fuchsia-700 flex items-center justify-center shadow-2xl shadow-purple-500/20 pulse-glow">
-          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round">
-            <polyline points="16 18 22 12 16 6" />
-            <polyline points="8 6 2 12 8 18" />
-          </svg>
+        <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-2xl shadow-purple-500/20 pulse-glow">
+          <img 
+            src="https://cdn.discordapp.com/icons/1541928149174984784/fa29c0d41945a2ad221ca0cf0c0b7409.png?size=128" 
+            alt="LuaForge Logo" 
+            className="w-full h-full object-cover"
+          />
         </div>
         <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-[#131316] border-2 border-purple-500 flex items-center justify-center text-[12px]">
           {category.icon}
@@ -729,11 +733,12 @@ export default function App() {
           </button>
 
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-purple-500 to-fuchsia-600 flex items-center justify-center shadow-md shadow-purple-500/15">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
-                <polyline points="16 18 22 12 16 6" />
-                <polyline points="8 6 2 12 8 18" />
-              </svg>
+            <div className="w-7 h-7 rounded-lg overflow-hidden shadow-md shadow-purple-500/15">
+              <img 
+                src="https://cdn.discordapp.com/icons/1541928149174984784/fa29c0d41945a2ad221ca0cf0c0b7409.png?size=128" 
+                alt="LuaForge Logo" 
+                className="w-full h-full object-cover"
+              />
             </div>
             <div className="flex items-baseline gap-2">
               <span className="font-bold text-[15px] gradient-text">LuaForge</span>
