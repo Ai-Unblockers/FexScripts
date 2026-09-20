@@ -1,13 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Message, Attachment, ChatConfig, ChatSession } from './types';
+import { Message, Attachment, ChatSession } from './types';
 import {
   readImage,
   readVideo,
-  EXECUTOR_SYSTEM,
   STORAGE_KEY,
-  CONFIG_KEY,
   SCRIPT_CATEGORIES,
   QUICK_PROMPTS,
+  generateScript,
 } from './utils';
 
 // ============ SIDEBAR ============
@@ -116,105 +115,6 @@ function Sidebar({
   );
 }
 
-// ============ SETTINGS MODAL ============
-function SettingsModal({
-  open,
-  onClose,
-  config,
-  onSave,
-}: {
-  open: boolean;
-  onClose: () => void;
-  config: ChatConfig;
-  onSave: (c: ChatConfig) => void;
-}) {
-  const [local, setLocal] = useState(config);
-
-  useEffect(() => {
-    setLocal(config);
-  }, [config, open]);
-
-  if (!open) return null;
-
-  return (
-    <div
-      className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in"
-      onClick={onClose}
-    >
-      <div
-        className="bg-[#131316] border border-[rgba(255,255,255,0.08)] rounded-2xl max-w-[500px] w-full p-6 shadow-2xl animate-slide-up"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center gap-3 mb-5">
-          <div className="w-10 h-10 rounded-xl overflow-hidden border border-purple-500/20">
-            <img 
-              src="https://cdn.discordapp.com/icons/1541928149174984784/fa29c0d41945a2ad221ca0cf0c0b7409.png?size=128" 
-              alt="LuaForge" 
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <div>
-            <h2 className="text-[16px] font-bold text-white">Executor Settings</h2>
-            <p className="text-[12px] text-[#71717a]">Configure API & generation</p>
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <div>
-            <label className="block text-[12px] font-medium text-[#a1a1aa] mb-1.5">API Endpoint</label>
-            <input
-              className="w-full bg-[#09090b] border border-[rgba(255,255,255,0.08)] rounded-xl px-3.5 py-2.5 text-[13px] text-white outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/20 transition-all"
-              value={local.url}
-              onChange={(e) => setLocal({ ...local, url: e.target.value })}
-            />
-          </div>
-          <div>
-            <label className="block text-[12px] font-medium text-[#a1a1aa] mb-1.5">API Key</label>
-            <input
-              type="password"
-              className="w-full bg-[#09090b] border border-[rgba(255,255,255,0.08)] rounded-xl px-3.5 py-2.5 text-[13px] text-white outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/20 transition-all"
-              value={local.key}
-              onChange={(e) => setLocal({ ...local, key: e.target.value })}
-              placeholder="sk-or-..."
-            />
-          </div>
-          <div>
-            <label className="block text-[12px] font-medium text-[#a1a1aa] mb-1.5">Model</label>
-            <input
-              className="w-full bg-[#09090b] border border-[rgba(255,255,255,0.08)] rounded-xl px-3.5 py-2.5 text-[13px] text-white outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/20 transition-all"
-              value={local.model}
-              onChange={(e) => setLocal({ ...local, model: e.target.value })}
-            />
-          </div>
-          <div>
-            <label className="block text-[12px] font-medium text-[#a1a1aa] mb-1.5">System Prompt</label>
-            <textarea
-              className="w-full bg-[#09090b] border border-[rgba(255,255,255,0.08)] rounded-xl px-3.5 py-2.5 text-[13px] text-white outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/20 transition-all min-h-[80px] resize-y"
-              value={local.system}
-              onChange={(e) => setLocal({ ...local, system: e.target.value })}
-            />
-          </div>
-        </div>
-
-        <div className="flex gap-3 justify-end mt-6">
-          <button
-            onClick={onClose}
-            className="px-4 py-2.5 rounded-xl text-[13px] font-medium text-[#a1a1aa] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-all"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={() => { onSave(local); onClose(); }}
-            className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 text-white px-5 py-2.5 rounded-xl text-[13px] font-semibold shadow-lg shadow-purple-500/15 transition-all"
-          >
-            Save Changes
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // ============ CODE BLOCK WITH COPY ============
 function CodeBlock({ code, lang }: { code: string; lang: string }) {
   const [copied, setCopied] = useState(false);
@@ -296,7 +196,7 @@ function AIMessage({ text }: { text: string }) {
 }
 
 // ============ MESSAGE BUBBLE ============
-function MessageBubble({ message, isStreaming }: { message: Message; isStreaming?: boolean }) {
+function MessageBubble({ message, isGenerating }: { message: Message; isGenerating?: boolean }) {
   if (message.role === 'user') {
     return (
       <div className="flex justify-end animate-fade-in">
@@ -330,7 +230,7 @@ function MessageBubble({ message, isStreaming }: { message: Message; isStreaming
         />
       </div>
       <div className="flex-1 min-w-0 text-[14px] leading-relaxed pt-0.5">
-        {isStreaming && !message.text ? (
+        {isGenerating && !message.text ? (
           <div className="flex gap-1.5 pt-2">
             <span className="w-2 h-2 rounded-full bg-purple-400 thinking-dot" />
             <span className="w-2 h-2 rounded-full bg-purple-400 thinking-dot" />
@@ -432,35 +332,13 @@ export default function App() {
   });
   const [activeId, setActiveId] = useState<string>('');
   const [activeCategory, setActiveCategory] = useState('esp');
-  const [config, setConfig] = useState<ChatConfig>(() => {
-    try {
-      const stored = localStorage.getItem(CONFIG_KEY);
-      return stored
-        ? JSON.parse(stored)
-        : {
-            url: 'https://openrouter.ai/api/v1',
-            key: '',
-            model: 'openai/gpt-4o-mini',
-            system: EXECUTOR_SYSTEM,
-          };
-    } catch {
-      return {
-        url: 'https://openrouter.ai/api/v1',
-        key: '',
-        model: 'openai/gpt-4o-mini',
-        system: EXECUTOR_SYSTEM,
-      };
-    }
-  });
   const [attachments, setAttachments] = useState<Attachment[]>([]);
-  const [streaming, setStreaming] = useState(false);
-  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [generating, setGenerating] = useState(false);
   const [error, setError] = useState('');
   const [dragOver, setDragOver] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const abortRef = useRef<AbortController | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const imgInputRef = useRef<HTMLInputElement>(null);
@@ -474,14 +352,10 @@ export default function App() {
   }, [sessions]);
 
   useEffect(() => {
-    localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
-  }, [config]);
-
-  useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages, streaming]);
+  }, [messages, generating]);
 
   const updateMessages = useCallback(
     (newMsgs: Message[]) => {
@@ -538,19 +412,13 @@ export default function App() {
 
   const send = async () => {
     const text = inputValue.trim();
-    if ((!text && attachments.length === 0) || streaming) return;
-    if (!config.key) {
-      setError('No API key configured. Open settings to add your key.');
-      setSettingsOpen(true);
-      return;
-    }
+    if (!text || generating) return;
     setError('');
 
     const category = SCRIPT_CATEGORIES.find((c) => c.id === activeCategory);
-    const contextPrefix = `[Category: ${category?.name || 'General'}] `;
     const userMsg: Message = {
       role: 'user',
-      text: contextPrefix + text,
+      text,
       attachments: [...attachments],
     };
 
@@ -567,88 +435,35 @@ export default function App() {
 
     setInputValue('');
     setAttachments([]);
-    setStreaming(true);
+    setGenerating(true);
 
-    const apiMessages: any[] = [{ role: 'system', content: config.system }];
-    for (const m of newMessages) {
-      if (m.role === 'user') {
-        const content: any[] = [];
-        for (const a of m.attachments || []) {
-          content.push({ type: 'image_url', image_url: { url: a.dataUrl } });
-        }
-        if (m.text) content.push({ type: 'text', text: m.text });
-        apiMessages.push({
-          role: 'user',
-          content: content.length === 1 && content[0].type === 'text' ? content[0].text : content,
-        });
-      } else {
-        apiMessages.push({ role: 'assistant', content: m.text || '' });
-      }
-    }
-
+    // Add empty AI message
     const aiMsg: Message = { role: 'assistant', text: '' };
     const msgsWithAi = [...newMessages, aiMsg];
     updateMessages(msgsWithAi);
 
-    abortRef.current = new AbortController();
-    try {
-      const res = await fetch(config.url + '/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + config.key,
-        },
-        body: JSON.stringify({
-          model: config.model,
-          messages: apiMessages,
-          stream: true,
-        }),
-        signal: abortRef.current.signal,
-      });
+    // Simulate generation delay for UX
+    await new Promise((resolve) => setTimeout(resolve, 600 + Math.random() * 800));
 
-      if (!res.ok) {
-        const t = await res.text();
-        throw new Error('API ' + res.status + ': ' + t.slice(0, 300));
+    // Generate script locally
+    const result = generateScript(activeCategory, text);
+    const fullResponse = `${result.intro}\n\n\`\`\`lua\n${result.code}\n\`\`\`\n\n${result.usage}`;
+
+    // Simulate streaming effect
+    const chunks = fullResponse.split('');
+    let current = '';
+    for (let i = 0; i < chunks.length; i++) {
+      current += chunks[i];
+      // Update in batches for performance
+      if (i % 3 === 0 || i === chunks.length - 1) {
+        const updatedAiMsg: Message = { role: 'assistant', text: current };
+        updateMessages([...newMessages, updatedAiMsg]);
+        await new Promise((resolve) => setTimeout(resolve, 2));
       }
-
-      const reader = res.body!.getReader();
-      const dec = new TextDecoder();
-      let buf = '';
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buf += dec.decode(value, { stream: true });
-        const lines = buf.split('\n');
-        buf = lines.pop() || '';
-
-        for (const line of lines) {
-          const s = line.trim();
-          if (!s.startsWith('data:')) continue;
-          const data = s.slice(5).trim();
-          if (data === '[DONE]') continue;
-          try {
-            const j = JSON.parse(data);
-            const delta = j.choices?.[0]?.delta?.content || '';
-            if (delta) {
-              aiMsg.text += delta;
-              updateMessages([...msgsWithAi.slice(0, -1), { ...aiMsg }]);
-            }
-          } catch {}
-        }
-      }
-    } catch (e: any) {
-      if (e.name !== 'AbortError') {
-        aiMsg.text = (aiMsg.text || '') + '\n\n[Error: ' + e.message + ']';
-        updateMessages([...msgsWithAi.slice(0, -1), { ...aiMsg }]);
-      }
-    } finally {
-      setStreaming(false);
-      abortRef.current = null;
     }
-  };
 
-  const stopStreaming = () => { abortRef.current?.abort(); };
+    setGenerating(false);
+  };
 
   const handleDragEnter = (e: React.DragEvent) => {
     if (!Array.from(e.dataTransfer.types).includes('Files')) return;
@@ -759,16 +574,11 @@ export default function App() {
             </select>
           </div>
 
-          <button
-            onClick={() => setSettingsOpen(true)}
-            className="ml-auto lg:ml-0 px-3 py-2 rounded-xl text-[12px] font-medium text-[#71717a] hover:text-white hover:bg-[rgba(255,255,255,0.05)] flex items-center gap-2 transition-all"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <circle cx="12" cy="12" r="3" />
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-            </svg>
-            <span className="hidden sm:inline">Settings</span>
-          </button>
+          <div className="ml-auto lg:ml-0 flex items-center gap-2">
+            <span className="hidden sm:inline text-[11px] text-[#52525b] bg-[rgba(255,255,255,0.03)] px-2.5 py-1 rounded-full border border-[rgba(255,255,255,0.06)]">
+              {currentCategory?.icon} {currentCategory?.name}
+            </span>
+          </div>
         </header>
 
         {/* Mobile sidebar overlay */}
@@ -804,7 +614,7 @@ export default function App() {
                   <MessageBubble
                     key={i}
                     message={m}
-                    isStreaming={streaming && i === messages.length - 1 && m.role === 'assistant'}
+                    isGenerating={generating && i === messages.length - 1 && m.role === 'assistant'}
                   />
                 ))}
               </div>
@@ -880,15 +690,19 @@ export default function App() {
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><polygon points="23 7 16 12 23 17 23 7" /><rect x="1" y="5" width="15" height="14" rx="2" /></svg>
                 </button>
                 <div className="flex-1" />
-                {streaming ? (
-                  <button type="button" onClick={stopStreaming} className="bg-white text-black px-4 py-2 rounded-xl text-[13px] font-semibold inline-flex items-center gap-1.5 hover:bg-gray-200 transition-all shadow-md">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2" /></svg>
-                    Stop
-                  </button>
+                {generating ? (
+                  <div className="bg-gradient-to-r from-purple-600/50 to-fuchsia-600/50 text-white px-4 py-2 rounded-xl text-[13px] font-semibold inline-flex items-center gap-1.5">
+                    <div className="flex gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-white thinking-dot" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-white thinking-dot" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-white thinking-dot" />
+                    </div>
+                    Generating...
+                  </div>
                 ) : (
                   <button
                     type="submit"
-                    disabled={!inputValue.trim() && attachments.length === 0}
+                    disabled={!inputValue.trim()}
                     className="bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white px-4 py-2 rounded-xl text-[13px] font-semibold inline-flex items-center gap-1.5 disabled:opacity-30 disabled:cursor-not-allowed hover:from-purple-500 hover:to-fuchsia-500 transition-all shadow-md shadow-purple-500/15 disabled:shadow-none"
                   >
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>
@@ -903,8 +717,6 @@ export default function App() {
           </form>
         </div>
       </main>
-
-      <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} config={config} onSave={setConfig} />
     </div>
   );
 }

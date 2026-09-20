@@ -12,13 +12,6 @@ export interface Message {
   attachments?: Attachment[];
 }
 
-export interface ChatConfig {
-  url: string;
-  key: string;
-  model: string;
-  system: string;
-}
-
 export interface ChatSession {
   id: string;
   title: string;
