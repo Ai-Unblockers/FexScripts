@@ -1,27 +1,5 @@
 import { Attachment } from './types';
 
-export function escapeHTML(s: string): string {
-  return s.replace(/[&<>]/g, (c) =>
-    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' } as Record<string, string>)[c]
-  );
-}
-
-export function renderMarkdown(text: string): string {
-  const parts = text.split(/(```[\s\S]*?```)/g);
-  return parts
-    .map((p) => {
-      if (p.startsWith('```')) {
-        const m = /^```(\w+)?\n?([\s\S]*?)```$/.exec(p);
-        const lang = (m && m[1]) || 'lua';
-        const code = m ? m[2] : p.replace(/```/g, '');
-        return `<pre class="bg-black/40 border border-[rgba(255,255,255,0.08)] rounded-lg p-3 overflow-auto text-[12.5px] mb-3"><div class="text-[10px] uppercase tracking-wider text-[rgba(255,255,255,0.55)] mb-1.5">${escapeHTML(lang)}</div><code>${escapeHTML(code)}</code></pre>`;
-      }
-      if (!p) return '';
-      return `<p class="mb-3">${escapeHTML(p).replace(/\n/g, '<br>')}</p>`;
-    })
-    .join('');
-}
-
 export function readImage(file: File): Promise<Attachment> {
   return new Promise((res, rej) => {
     if (file.size > 20 * 1024 * 1024)
